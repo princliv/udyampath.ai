@@ -5,7 +5,9 @@
 >
 > **Ground rule:** *Nothing that exists today is dropped.* Every current screen and feature is listed in [§4 Feature Preservation Matrix](#4-feature-preservation-matrix) with the place it lives in the new platform. Things are fixed, moved or upgraded, never deleted. The only exceptions are dead code and unused libraries (§4.9).
 >
-> Companion doc: [DESIGN_PRINCIPLES.md](DESIGN_PRINCIPLES.md) (visual and interaction system).
+> **One plan sheet:** §8 holds every phase of work: the platform build *and* the page-by-page UI redesign that used to live only in `.github/agents/vishwakarma.agent.md` (the "Vishwakarma" design phases V1–V9). See [§8.1](#81-ui-redesign-track-vishwakarma-v1v9) for how they map.
+>
+> Companion doc: [DESIGN_PRINCIPLES.md](DESIGN_PRINCIPLES.md) (visual and interaction system). Where the Vishwakarma agent file and DESIGN_PRINCIPLES.md disagree, **DESIGN_PRINCIPLES.md wins**.
 > Source diagrams: `specialfeature1.png` (Hybrid Pathway), `specialfeature2.png` (Job Simulator), `specialfeature3.png` (Job Recommendation), `dfd1.png` (data flow), `merge.png` (how the three connect).
 
 ---
@@ -18,7 +20,7 @@
 5. [Target infrastructure & architecture](#5-target-infrastructure--architecture)
 6. [Data model](#6-data-model)
 7. [Routes / information architecture](#7-routes--information-architecture)
-8. [Execution plan — phases](#8-execution-plan--phases)
+8. [Execution plan — phases](#8-execution-plan--phases) (includes the [UI redesign track](#81-ui-redesign-track-vishwakarma-v1v9))
 9. [Quality bar: Definition of Done, testing, performance](#9-quality-bar)
 10. [Risks & decisions to confirm](#10-risks--decisions-to-confirm)
 
@@ -371,7 +373,7 @@ Legend: **Keep** = same behavior, restyled · **Fix** = currently broken, will w
 | Monitoring | none | Firebase Analytics (GA4) + Sentry (free tier) | Funnel metrics for the project report |
 | Local dev | — | **Firebase Emulator Suite** + seed script | No one tests against production |
 
-> **Firebase API key note:** the key committed in `firebase.js` is not a secret; Firebase web keys are public by design. The real problem is the missing **security rules**. We still move config to `.env` (`VITE_FIREBASE_*`) so we can have separate dev and prod projects.
+> **Firebase API key note:** Firebase web keys are public by design, so the key is not a secret. The real problem is the missing **security rules**. Config has already moved out of `firebase.js` into env files (`REACT_APP_FIREBASE_*` in `.env`, `.env.development`, `.env.local`, all git-ignored; `.env.example` is the committed template). Phase 1 renames them to `VITE_FIREBASE_*` and splits dev and prod projects. The old key is still in git history from the first commit, which is acceptable for a web key.
 >
 > **Cost note:** Cloud Functions require the **Blaze (pay-as-you-go)** plan. Student-scale usage fits inside the free quota. Set a **₹500 budget alert**. If Blaze is not possible, the fallback is the same function code deployed as Vercel/Render serverless endpoints using the Firebase Admin SDK.
 
@@ -561,6 +563,53 @@ Everything is addressable by URL, and no page needs `location.state`. Old URLs �
 
 Each phase ends with a **demo-able increment** and the app stays deployable throughout. Sizes are relative (S ≈ 1 week, M ≈ 2 weeks, L ≈ 3+ weeks for one developer). Phases 5 and 7 can run in parallel with 4 and 6 if the team has more than one developer.
 
+Every phase has two kinds of tasks:
+- **Build tasks:** features, data, functions and fixes.
+- **🎨 UI design tasks:** the page redesign for the screens that phase touches. They come from the Vishwakarma design phases (V1–V9), adjusted to DESIGN_PRINCIPLES.md.
+
+A page is redesigned **in the same phase that rebuilds it**, so no screen is styled twice.
+
+### 8.1 UI redesign track (Vishwakarma V1–V9)
+
+| Design phase | Screens | Done in | Status (11 Oct 2026) |
+|---|---|---|---|
+| V1 Foundation | Font, tokens, shared components | Phase 1 | **Mostly built:** Plus Jakarta Sans loaded; section CSS variables, `.glass-card`, shimmer and `.animated-section` in `index.css`; `GlassCard`, `AnimatedSection`, `PageTransition`, `SkeletonCard` in `components/shared/`. Needs reconciling with DESIGN_PRINCIPLES.md. |
+| V2 Homepage | `homepage.jsx`, `components/homepage/` | Phase 1 | **Started:** page uses `PageTransition` / `AnimatedSection` |
+| V3 Courses | `coursepage.jsx`, `components/coursepage/` | Phase 3 (pathway visuals in Phase 4) | **Started:** course rows, Specializations and My Learnings use the shared components |
+| V4 Jobs | `jobpage.jsx`, `components/jobpage/` | Phase 5 | Not started |
+| V5 Tools | `toolspage.jsx`, `components/toolspage/` | Phase 7 | Not started |
+| V6 Notes | `notespage.jsx`, `components/notespage/` | Phase 7 | **Started:** flashcard 3D flip, motion on books |
+| V7 Profile | `profile.jsx`, `components/profile/` | Phase 2 | Not started |
+| V8 Header, footer, auth | `App.js`, `AuthModal.jsx` | Header + footer in Phase 1, auth in Phase 2 | **Started:** header turns glass on scroll |
+| V9 Recruiter | `recruiter.jsx`, `components/recruiter/` | Phase 8 | Not started |
+
+**What changes from the original agent file** (DESIGN_PRINCIPLES.md wins):
+
+| Vishwakarma said | Merged plan does | Why |
+|---|---|---|
+| Glassmorphism on **all** cards | Glass only on the scrolled header, hero overlays, the 3 home hero cards, modal backdrops and celebration overlays. Course, job, tool and profile cards are neutral `Card`s with one accent. | Blur is slow on low-end phones; translucent cards cut text contrast (DESIGN_PRINCIPLES §4.1) |
+| Section gradient behind whole pages | Section gradient only on the **hero band** (160–240px). Page body stays `--bg` | §2.4: accent in at most 3 places per screen |
+| `--home-primary`, `--course-primary`, … per section | One `--accent-500` / `--accent-700` pair resolved from `data-section` on `<main>` | Same component works in every section with no props (§2.4) |
+| Page transition rises 24px, 400ms | Rise 8px, 200ms | §5 motion tokens |
+| Scroll reveal on every section | Scroll reveal on marketing pages only (home, landing), max 6 items, 40ms stagger. Never on catalog, jobs or dashboards | §5 |
+| Glass input fields | Solid inputs with a visible label, 44px tall; accent border on focus | Form readability (§7) |
+| Card hover lift `y: -6, scale: 1.02` | `shadow-xs → shadow-sm` on hover with the `fast` token. Lift only on the 3 home hero cards | §1.7 "motion with a purpose" |
+| Hardcoded `#1181c8` buttons | `--brand-600` for buttons and links | `#1181c8` with white text fails AA (4.2:1) |
+
+**Kept from Vishwakarma as written:** per-section colour identity, Plus Jakarta Sans, skeletons tinted with the section accent, page transitions, animated progress-bar fill, 3D flashcard flip, header that turns glass on scroll, glass auth modal, dark recruiter shell with gold highlights, and count-up stats.
+
+**Rules carried over from the agent file** (apply to every 🎨 task):
+1. Read the current file before editing it.
+2. Never break a route. Old URLs keep working until §7 redirects replace them.
+3. Never break Firebase: auth state, data fetching and Firestore queries keep working.
+4. Keep responsive behaviour. Existing `isMobile` / `useMediaQuery` logic is only removed once the same layout comes from breakpoints.
+5. Never remove a feature. The redesign is a coat of paint on working architecture (see §4).
+6. Framer Motion (v11) is the only animation library.
+7. V1 (Phase 1) finishes before any other 🎨 task.
+8. Run the app after every page and confirm there are no console errors before starting the next one.
+9. Colours come from tokens, never hex in JSX.
+10. Redesign one page at a time.
+
 ### Phase 0 — Stabilize what exists *(S)*
 **Goal:** the current app works end-to-end for a demo before any rebuild.
 - [ ] Fix the jobs list: `details.jsx` uses the `city` prop and matches `c.city` (case-insensitive). The list renders even when no city is entered.
@@ -572,6 +621,9 @@ Each phase ends with a **demo-able increment** and the app stays deployable thro
 - [ ] Show the founder modal once per user.
 - [ ] Add **baseline Firestore + RTDB + Storage rules** (owner-only users, recruiter-only posts). This is the most urgent security fix.
 - [ ] Set the page `<title>` / manifest to "UdyamPath".
+- [x] Move Firebase config out of `firebase.js` into git-ignored env files (`REACT_APP_FIREBASE_*`), with `.env.example` as the template.
+
+🎨 **UI design:** none. Phase 0 is fixes only, so the redesign starts on a working app.
 
 **Exit:**
 - All current routes load, including on refresh, wherever they don't depend on `location.state`.
@@ -586,12 +638,41 @@ Each phase ends with a **demo-able increment** and the app stays deployable thro
 - [ ] Implement **design tokens + Tailwind v4 + `components/ui`** per DESIGN_PRINCIPLES.md: Button, Card, Chip, Dialog, Tabs, Progress, Skeleton, Toast, EmptyState, Money, Stepper.
 - [ ] Rebuild the **AppShell**: Header, MobileDock and Footer (out of the 822-line `App.js`), route-level code splitting, PageTransition and a 404 page.
 - [ ] Restyle the homepage on the new system, with all sections kept (§4.2).
-- [ ] Update `.github/agents/vishwakarma.agent.md` to follow DESIGN_PRINCIPLES.md. It currently says "glass on ALL cards", which conflicts with the new rules.
+- [ ] Update `.github/agents/vishwakarma.agent.md` to follow DESIGN_PRINCIPLES.md and §8.1. It currently says "glass on ALL cards", which conflicts with the new rules.
+
+🎨 **UI design — V1 Foundation** (already partly built; this finishes and reconciles it):
+- [x] Load Plus Jakarta Sans (400–800) in `public/index.html`.
+- [x] Install `react-loading-skeleton`.
+- [x] Create `components/shared/`: `GlassCard`, `AnimatedSection`, `SkeletonCard`, `PageTransition`.
+- [ ] Move the `:root` variables from `src/index.css` into `src/styles/tokens.css` per DESIGN_PRINCIPLES §2 and §11. Replace `--home-primary`, `--course-primary`, … with `--accent-500` / `--accent-700` driven by `data-section`. Keep the old names as aliases until every page is ported, then delete them.
+- [ ] Add the hero-band gradients per section (§2.4) as `--accent-gradient`.
+- [ ] Update `.glass-card` to the §4.1 `.glass` rule, including the `@supports` and reduced-transparency fallbacks.
+- [ ] `PageTransition`: 8px rise, 200ms. `AnimatedSection`: honour `prefers-reduced-motion`, max 6 staggered items at 40ms.
+- [ ] `SkeletonCard` → `components/ui/Skeleton`: base `--n-100`, highlight tinted from `--accent-500`; shimmer off under reduced motion; shown only after 150ms.
+- [ ] Add JetBrains Mono for code.
+
+🎨 **UI design — V8 Header & footer:**
+- [x] Header is transparent at the top and turns glass after 20px of scroll (`backdrop-filter: blur(20px)`, soft shadow, 0.3s transition).
+- [ ] Move the header out of `App.js` into `components/layout/Header`, keeping the scroll behaviour. Nav links get a hover underline in CSS (no JS hover handlers). The login button is a glass pill when scrolled and outlined when transparent.
+- [ ] Footer keeps its brand background, now `--brand-deep`. 4-column grid on desktop that stacks on mobile, `1px` top border at `rgb(255 255 255 / .15)`, column headings weight 700, links fade on hover.
+- [ ] Mobile dock: visible labels, `aria-label`s, 44px tap targets.
+
+🎨 **UI design — V2 Homepage** (`homepage.jsx`, `components/homepage/`):
+- [ ] Wrap the page in `PageTransition`. Hero uses the home gradient (`brand-500 → brand-deep`), two columns on desktop and stacked on mobile.
+  - Left: display heading (48px, weight 800, white) with lines entering one by one (`x: -30 → 0`, 0.1s apart), description, CTA buttons.
+  - Right: the 3 **glass** cards (Jobs, Courses, Tools) with coloured icons. This is one of the few places glass is allowed; hover lift is allowed here.
+- [ ] Sections below the hero sit on a light background, each wrapped in `AnimatedSection`.
+- [ ] `newFeature.jsx`: neutral cards with a soft shadow, staggered reveal (`staggerChildren` capped per §5), image scales slightly on hover, rounded images. Merge in `newFeature_updated.jsx`, then delete it.
+- [ ] `popular.jsx`: reveal the carousel container on scroll; course cards get a coloured top accent strip per category.
+- [ ] `howitworks.jsx`: odd steps enter from the left and even steps from the right; step numbers are large accent circles that scale in. Content shows the 3-feature journey (§1).
+- [ ] `event.jsx`: section reveal; neutral event cards.
+- [ ] `FaqPage.jsx`: animated accordion (height expands, chevron rotates), keyboard accessible.
 
 **Exit:**
 - `npm run dev` (Vite) and emulators work.
 - CI is green.
 - The homepage and shell are on the new design system, with Lighthouse mobile ≥ 85 for Performance and ≥ 95 for Accessibility.
+- V1, V2 and the header/footer part of V8 are complete.
 
 ### Phase 2 — Data layer, auth & profile *(M)*
 - [ ] Bootstrap Firestore. Write `scripts/seed` (§6 migration) and seed both the emulator and dev.
@@ -606,7 +687,20 @@ Each phase ends with a **demo-able increment** and the app stays deployable thro
 - [ ] Migrate localStorage features (flashcard bookmarks, HR experiences, adaptability answers) to `users/{uid}/private/*` when logged in. They stay in localStorage for guests.
 - [ ] Write a **rules unit test suite** (emulator), run in CI.
 
-**Exit:** a new user can sign up, onboard, edit their profile, reload, and see everything saved. A recruiter can't post until approved.
+🎨 **UI design — V8 Auth** (`AuthModal.jsx`; `/login` and `/signup` open the modal):
+- [ ] Glass modal over a blurred backdrop, entering and leaving with `AnimatePresence` (scale 0.9 → 1, fade).
+- [ ] Inside the modal, a solid form panel (max-width 420px): visible labels, 44px inputs, primary button in `--brand-600`.
+- [ ] The onboarding wizard `/welcome` uses the same look: one question per step with a progress indicator.
+
+🎨 **UI design — V7 Profile** (`profile.jsx`, `components/profile/`, section accent: violet):
+- [ ] Hero banner with a violet gradient overlay and a fade-in entrance. The avatar has a translucent ring (`3px solid rgb(255 255 255 / .5)`); name and title in white on the banner.
+- [ ] Education, skills, experience and other info: each is its own neutral `Card` panel, revealed together (no per-card scroll animation).
+- [ ] `ProfileEditModal.jsx` / `detailform.jsx`: glass backdrop with `blur(12px)`; solid form surface; inputs get a violet border on focus; modal enters with a spring (scale 0.9 → 1).
+- [ ] Achievement badges and tags pop in with a short stagger. Space is left for the certificates and badges showcase (Phases 3 and 6).
+
+**Exit:**
+- A new user can sign up, onboard, edit their profile, reload, and see everything saved. A recruiter can't post until approved.
+- The auth modal and profile page match V7 and V8.
 
 ### Phase 3 — Core learning (Coursera parity) + certificates *(L)*
 - [ ] **Catalog `/explore`:** search, filters (topic, level, duration, provider), and course rows (Popular, New, Recommended, Recently viewed) built from **one** `CourseCard`/`CourseRow` component.
@@ -620,9 +714,19 @@ Each phase ends with a **demo-able increment** and the app stays deployable thro
 - [ ] **Certificates:** an `issueCertificate` function generates the PDF with pdf-lib and stores it in Storage. Add the `/verify/certificate/:id` page, a LinkedIn share button and a profile showcase. Keep the confetti moment.
 - [ ] Keep **60-Second Learning** and **Daily Challenge**: content moves to data and the leaks are fixed. *(Real code execution arrives in Phase 6.)*
 
+🎨 **UI design — V3 Courses** (`coursepage.jsx`, `components/coursepage/`, section accent: lavender `#7c6bff`):
+- [ ] Lavender hero band on `/explore`; the rest of the page is neutral.
+- [ ] Tab bar (Courses / Specializations / My Learning): soft lavender track, `--radius-xl`; the active tab is filled with the accent ink and white text, with a 0.3s transition. Tabs sync to `?tab=`.
+- [ ] Course rows (`recommendedCourse`, `recentView`, `mostPopular`, `newOnUdyamPath`) → one `CourseCard`: lavender-tinted skeleton while loading (base `#ede9fe`, highlight `#c8bbff`), then cards appear. No glass on course cards.
+- [ ] `SpecializationPage.jsx`: card grid with a lavender accent per card, short stagger on first load only.
+- [ ] `MyLearningsPage.jsx`: progress bars fill on mount (`width: 0 → n%`), always with the text percentage.
+- [ ] `modulePage.jsx` / lesson player: section headers get a left border in the accent colour; focus layout from DESIGN_PRINCIPLES §8.
+- [ ] Certificate moment: glass celebration overlay + confetti (reduced-motion safe).
+
 **Exit:**
 - A learner can enroll, finish lessons, pass the final test (graded server-side) and download a verifiable certificate.
 - A specialization certificate is issued when all of its courses are done.
+- The courses area shows skeletons → content, the tabs animate and the progress bars fill (V3).
 
 ### Phase 4 — Special Feature 1: Hybrid Pathway *(M)*
 - [ ] Seed the `providers` list (recognized platforms + "Institutional knowledge").
@@ -637,6 +741,11 @@ Each phase ends with a **demo-able increment** and the app stays deployable thro
 - [ ] Enforce the cooldown (1 attempt per 7 days) and the certificate wording for credited courses.
 - [ ] Turn the "Customized path" banner and Learn More modal on `/explore` into the entry point.
 - [ ] Write unit tests for `pathway.ts` (status computation, weeks saved, certificate eligibility).
+
+🎨 **UI design — V3 Courses, pathway part:**
+- [ ] `SpecializationDetail.jsx`: lavender hero band → `PathwayTimeline` (vertical on mobile, horizontal on desktop) with a status chip per course (icon + text, §2.5).
+- [ ] When a course becomes credited, the chip changes with a `celebrate` animation; the "You saved ~N weeks" banner counts up once.
+- [ ] Setup wizard: one question per step, Stepper at the top, solid form surfaces.
 
 **Exit:** all three branches of `specialfeature1.png` work end-to-end (no knowledge / platform test pass+fail / credential approve+reject), and the result counts toward the specialization certificate.
 
@@ -656,7 +765,18 @@ Each phase ends with a **demo-able increment** and the app stays deployable thro
 - [ ] Recruiter job form: Indian city picker (multi), mode, and salary with a period.
 - [ ] Re-seed jobs with Indian locations.
 
-**Exit:** every branch of `specialfeature3.png` is visible in the UI with correct numbers, verified by unit tests on fixture data.
+🎨 **UI design — V4 Jobs** (`jobpage.jsx`, `components/jobpage/`, section accent: sky `#0ea5e9`):
+- [ ] Sky hero band with the user's city + lifestyle and an "Edit" control; the page body is neutral.
+- [ ] Filter/search panel: a neutral card (bottom sheet on mobile) with solid inputs. No glass inputs.
+- [ ] `JobCard`: neutral card with a `4px` left accent border, company logo in a round neutral badge, affordability chip; shadow deepens on hover. Cards appear together after the skeleton (no scroll stagger on lists).
+- [ ] Sky-tinted job card skeletons (base `#e0f2fe`).
+- [ ] `basePage.jsx` / `baseDetails.jsx` → Expense dashboard: panels slide in when opened; expense category colours from DESIGN_PRINCIPLES §2.6.
+- [ ] `CityDetailsModal.jsx`: blurred backdrop (`blur(8px)`) with a solid modal surface.
+- [ ] `internApply.jsx` and job apply: solid form panels; the submit button shows a loading state and keeps its width.
+
+**Exit:**
+- Every branch of `specialfeature3.png` is visible in the UI with correct numbers, verified by unit tests on fixture data.
+- Job lists go from skeleton → cards, filters work and modals have the blurred backdrop (V4).
 
 ### Phase 6 — Special Feature 2: Course-End Job Simulator + Badge *(L)*
 - [ ] **Code execution service:** a `runCode` function → Judge0 (hosted to start). An in-browser pre-run gives instant feedback. This also upgrades **Daily Challenge** and **CodeEditor** to real tests.
@@ -674,6 +794,11 @@ Each phase ends with a **demo-able increment** and the app stays deployable thro
 - [ ] **Job-Ready Badge:** an `issueBadge` function, the `/verify/badge/:id` page, a profile showcase, the badge shown on applications, and badge-match ranking in `/jobs` (`merge.png`).
 - [ ] Turn the existing **JobSimulator** into "Interview Simulator — Quick Practice": persisted history, and optional AI feedback replacing the canned text.
 
+🎨 **UI design — Simulator** (not in the original V1–V9; section accent: magenta `#c026d3`, DESIGN_PRINCIPLES §2.4):
+- [ ] Magenta hero band on `/simulator`; locked tracks show a `Lock` chip.
+- [ ] Workspace follows DESIGN_PRINCIPLES §8: two panes on desktop, tabs on mobile, `DeadlineTimer`, `FeedbackList`. No glass in the workspace.
+- [ ] Badge moment: glass celebration overlay + confetti.
+
 **Exit:** the full loop in `specialfeature2.png` works, including a missed deadline → back to training, an incorrect answer → module link → resubmit, and a pass → badge visible to a recruiter.
 
 ### Phase 7 — Career tools, notes & AI Mentor port *(M)*
@@ -683,7 +808,24 @@ Each phase ends with a **demo-able increment** and the app stays deployable thro
 - [ ] "Upgrade to Plus" becomes one component with a waitlist signup.
 - [ ] Resume check gets optional AI suggestions; the deterministic keyword score stays.
 
-**Exit:** every row in §4.5–4.6 is ticked on the new stack, and no old route remains except redirects.
+🎨 **UI design — V5 Tools** (`toolspage.jsx`, `components/toolspage/`, section accent: orange `#f97316`):
+- [ ] Orange hero band; tool category grid of neutral tiles with 48px orange icons. The icon scales on hover; the tile rises slightly (`y: -4`). Short stagger on first load (`staggerChildren: 0.08`, max 6).
+- [ ] `techInterview.jsx` / `hrInterview.jsx` / `groupDiscussion.jsx`: neutral question cards; each new question fades and slides in. Any timer is a circular progress ring with text.
+- [ ] `softSkill.jsx` / `communication.jsx`: tips revealed with a card flip.
+- [ ] `placementpaper.jsx` / `placeTest.jsx`: filter tabs in the Tabs component; orange-tinted skeleton (base `#fff7ed`) for the paper list.
+- [ ] `project.jsx` / `projectlist.jsx`: neutral project cards.
+
+🎨 **UI design — V6 Notes** (`notespage.jsx`, `components/notespage/`, section accent: teal `#0d9488`):
+- [ ] Teal hero band; neutral body.
+- [ ] `books.jsx` / `RecommendedBooks.jsx`: book cards with a teal accent; covers have rounded corners, a shadow and scale on hover. The horizontal carousel scrolls smoothly with faded edges (CSS mask).
+- [ ] `FlashCard.jsx`: keep and polish the 3D flip (`transform-style: preserve-3d`, 0.6s `cubic-bezier(0.4, 0, 0.2, 1)`; front `rotateY(0)`, back `rotateY(180deg)`). The front has a teal accent; the back has a different tint. Opacity crossfade under reduced motion.
+- [ ] `PyqPage.jsx`: pill filter chips (active chip filled with the teal ink); paper cards in a neutral grid.
+- [ ] `Modal.jsx`: blurred backdrop, solid modal surface.
+- [ ] Teal-tinted skeletons (base `#f0fdfa`).
+
+**Exit:**
+- Every row in §4.5–4.6 is ticked on the new stack, and no old route remains except redirects.
+- V5 and V6 are complete: tools grid animates in, the flashcard flips smoothly, PYQ filters work.
 
 ### Phase 8 — Recruiter & Admin *(M)*
 - [ ] **RecruiterShell:**
@@ -694,7 +836,16 @@ Each phase ends with a **demo-able increment** and the app stays deployable thro
 - [ ] Applicant notifications on status changes.
 - [ ] *(Optional)* External job import via a scheduled function.
 
-**Exit:** a recruiter can post a job, see a badge-holding applicant, and move them through the pipeline. An admin can run the platform without touching the console.
+🎨 **UI design — V9 Recruiter** (`recruiter.jsx`, `components/recruiter/`, section accent: dark slate + gold):
+- [ ] `RecruiterShell` on a dark slate background (`#1e293b → #0f172a`). Dense, table-first layout; no scroll animations (DESIGN_PRINCIPLES §8).
+- [ ] `RecruiterHome.jsx`: stat cards on a translucent dark surface (`rgb(255 255 255 / .06)`, `1px` border at `/.1`, white text) in a 3–4 column grid. Stat numbers count up once on load (shown at once under reduced motion).
+- [ ] Action buttons use the gold accent `#fbbf24` with dark text.
+- [ ] Modals (`HackathonModal`, `JobInternshipModal`, `QuizModal`, `WorkshopModal`): dark glass (`rgb(15 23 42 / .85)`, `blur(24px)`); dark inputs (`rgb(255 255 255 / .08)`, white text, `/.15` border) with visible labels; gold gradient submit button.
+- [ ] Admin pages: plain neutral UI, no gradients.
+
+**Exit:**
+- A recruiter can post a job, see a badge-holding applicant, and move them through the pipeline. An admin can run the platform without touching the console.
+- The recruiter dashboard is dark, stats count up and the modals are dark glass (V9). All 9 Vishwakarma design phases are complete.
 
 ### Phase 9 — Hardening & launch *(S–M)*
 - [ ] **Accessibility audit:** WCAG 2.2 AA, keyboard paths, screen-reader pass on the 5 golden flows.
