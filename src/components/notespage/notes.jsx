@@ -156,18 +156,20 @@ const Notes = () => {
 
 const styles = {
   container: {
-    padding: '40px',
+    padding: 'clamp(16px, 4vw, 40px)',
     maxWidth: '1100px',
     margin: 'auto',
   },
   header: {
     display: 'flex',
+    flexWrap: 'wrap',
+    gap: '20px',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: '40px',
   },
   heading: {
-    fontSize: '2.5rem',
+    fontSize: 'clamp(1.75rem, 5vw, 2.5rem)',
     fontWeight: 'bold',
     margin: 0,
   },
@@ -184,7 +186,8 @@ const styles = {
     borderRadius: '20px',
     padding: '20px',
     textAlign: 'center',
-    width: '300px',
+    width: '100%',
+    maxWidth: '300px',
     backgroundColor: '#f9f9f9',
   },
   uploadTitle: {
@@ -216,6 +219,8 @@ const styles = {
   },
   content: {
     display: 'flex',
+    flexWrap: 'wrap',
+    gap: '20px',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     marginTop: '30px',
@@ -231,8 +236,8 @@ const styles = {
     display: 'inline-block',
     overflow: 'hidden',
     marginTop: '70px',
-    marginRight: '20px',
-    width: '500px',
+    flex: '1 1 320px',
+    maxWidth: '500px',
   },
   overlay: {
     position: 'absolute',
@@ -262,14 +267,15 @@ const styles = {
     zIndex: '2',
   },
   stepsContainer: {
-    padding: '30px',
+    padding: 'clamp(16px, 4vw, 30px)',
     backgroundColor: '#fff',
     borderRadius: '10px',
-    width: '45%',
+    flex: '1 1 300px',
+    maxWidth: '460px',
     fontSize: '1.2rem',
     fontWeight: 'bold',
     color: '#222',
-    marginLeft: '200px',
+    marginLeft: 'auto',
   },
   stepsList: {
     paddingLeft: '0',

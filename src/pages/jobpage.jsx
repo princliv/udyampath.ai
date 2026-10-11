@@ -23,8 +23,8 @@ const JobPage = () => {
     <div style={{ display: "flex", flexDirection: "column", gap: "20px", padding: "20px" }}>
       
       {/* Top Section */}
-      <div style={{ display: "flex", justifyContent: "space-between", gap: "20px" }}>
-        <div style={{ background: "#131346", color: "white", padding: "20px", borderRadius: "10px", width: "250px", textAlign: "center" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "20px" }}>
+        <div style={{ background: "#131346", color: "white", padding: "20px", borderRadius: "10px", flex: "1 1 250px", maxWidth: "100%", textAlign: "center" }}>
           <h2>Know the Cost of Living Around You</h2>
           <button 
             style={{ marginTop: "10px", padding: "10px 15px", background: "white", color: "#131346", border: "none", borderRadius: "5px", cursor: "pointer" }} 
@@ -37,10 +37,10 @@ const JobPage = () => {
         <div style={{ 
           backgroundImage: `url(${headerBg})`, backgroundSize: "cover", 
           backgroundPosition: "center", backgroundRepeat: "no-repeat",
-          padding: "20px", borderRadius: "10px", flex: 1 
+          padding: "20px", borderRadius: "10px", flex: "999 1 320px", minWidth: 0
         }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <h2 style={{ fontSize: "28px" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "12px" }}>
+            <h2 style={{ fontSize: "clamp(20px, 4vw, 28px)" }}>
               Get Recommendations based on the <span style={{ color: "#004aad" }}>Salary</span> with<br /> 
               respect to <span style={{ color: "#004aad" }}>Expense</span>
             </h2>
@@ -49,7 +49,7 @@ const JobPage = () => {
               placeholder="Enter city name (e.g., Bengalore)"
               value={city}
               onChange={(e) => setCity(e.target.value)}
-              style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "5px", width: "300px" }}
+              style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "5px", width: "100%", maxWidth: "300px" }}
             />
           </div>
           <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "10px" }}>

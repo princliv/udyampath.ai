@@ -81,16 +81,16 @@ const ProjectList = () => {
           padding: "20px",
           borderRadius: "10px",
           flex: 1,
-          minWidth: '300px',
+          minWidth: 'min(300px, 100%)',
         }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "50px", flexWrap: "wrap", marginBottom: "20px" }}>
-            <h2 style={{ fontSize: "30px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "clamp(12px, 4vw, 50px)", flexWrap: "wrap", marginBottom: "20px" }}>
+            <h2 style={{ fontSize: "clamp(20px, 4vw, 30px)" }}>
               Build Your <span style={{ color: "#004aad" }}>Portfolio</span> by Exploring & Working <br />
               on Impactful <span style={{ color: "#004aad" }}>Projects</span>
             </h2>
 
             {/* Wrapper for search + dropdown */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', minWidth: '400px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', flex: '1 1 260px', maxWidth: '400px' }}>
               <input
                 type="text"
                 placeholder="Search Projects..."

@@ -150,11 +150,12 @@ const Details = () => {
   
 
   return (
-    <div style={{ display: "flex", gap: "20px", padding: "0px" }}>
-  {/* Left Sidebar */}
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "20px", padding: "0px" }}>
+  {/* Left Sidebar (full width above the list on small screens) */}
   <div
   style={{
-    width: "242px",
+    flex: "1 1 242px",
+    maxWidth: "100%",
     borderRadius: "16px",
     background: "#fff",
     boxShadow: "0 8px 24px rgba(0, 0, 0, 0.1)",
@@ -312,7 +313,7 @@ const Details = () => {
 
 
   {/* Right Section */}
-  <div style={{ flex: 1 }}>
+  <div style={{ flex: "999 1 300px", minWidth: 0 }}>
       {/* Toggle Buttons */}
       <div style={{
         display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px"

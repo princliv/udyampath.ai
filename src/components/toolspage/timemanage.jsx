@@ -112,14 +112,14 @@ const TimeManagement = () => {
       <h2 style={{ textAlign: "center", color: "#333" }}>Time Management & Challenges</h2>
 
       {/* Challenge Selection */}
-      <div style={{ display: "flex", justifyContent: "space-between", gap: "15px", marginBottom: "20px" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "15px", marginBottom: "20px" }}>
         {Object.keys(challenges).map((type) => (
           <div
             key={type}
             onClick={() => startChallenge(type)}
             style={{
-              flex: 1,
-              padding: "20px",
+              flex: "1 1 90px",
+              padding: "20px 12px",
               textAlign: "center",
               backgroundColor: challengeType === type ? "#007bff" : "#f0f0f0",
               color: challengeType === type ? "white" : "black",

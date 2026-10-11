@@ -286,8 +286,10 @@ const styles = {
     boxShadow: "0 4px 15px rgba(0,0,0,0.05)",
   },
   profileImg: {
-    width: "400px",
-    height: "400px",
+    width: "100%",
+    maxWidth: "400px",
+    height: "auto",
+    aspectRatio: "1 / 1",
     borderRadius: "20px",
     objectFit: "cover",
     boxShadow: "0 20px 40px rgba(0,0,0,0.15)",

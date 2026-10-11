@@ -99,6 +99,9 @@ body {
   background: #ffffff;
   color: #333333;
   line-height: 1.6;
+  /* Safety net: the page itself never scrolls sideways. `clip` (unlike `hidden`)
+     keeps the sticky header working. Wide content should still be fixed at the source. */
+  overflow-x: clip;
 }
 
 code {

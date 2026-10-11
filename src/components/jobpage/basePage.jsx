@@ -72,12 +72,13 @@ const BasePage = () => {
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
-        padding: "30px", 
-        borderRadius: "15px", 
-        width: "70%", 
+        padding: "clamp(16px, 4vw, 30px)",
+        borderRadius: "15px",
+        width: "70%",
+        minWidth: "min(100%, 600px)",
         margin: "40px auto"
       }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "12px" }}>
           <h2 style={{ fontSize: "24px", textAlign: "left" }}>
             Get Recommendation based on the <span style={{ color: "#004aad" }}>Salary</span> with<br /> 
             respect to <span style={{ color: "#004aad" }}>Expense</span>
@@ -87,7 +88,7 @@ const BasePage = () => {
             placeholder="Enter Living City"
             value={inputCity}
             onChange={(e) => setInputCity(e.target.value)}
-            style={{ padding: "12px", border: "1px solid #ccc", borderRadius: "8px", width: "280px", fontSize: "16px" }}
+            style={{ padding: "12px", border: "1px solid #ccc", borderRadius: "8px", width: "100%", maxWidth: "280px", fontSize: "16px" }}
           />
         </div>
         <button 
@@ -112,13 +113,16 @@ const BasePage = () => {
       {/* Selected City Box */}
       {selectedCity && (
         <div style={{ 
-          display: "flex", 
-          alignItems: "center", 
-          background: "#f0f4f8", 
-          padding: "15px", 
-          borderRadius: "12px", 
-          width: "400px", 
-          margin: "30px auto" 
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "15px",
+          alignItems: "center",
+          background: "#f0f4f8",
+          padding: "15px",
+          borderRadius: "12px",
+          width: "100%",
+          maxWidth: "400px",
+          margin: "30px auto"
         }}>
           <h3 style={{ margin: "0", fontWeight: "bold", fontSize: "20px" }}>
             Selected City: {selectedCity.city}
@@ -126,7 +130,7 @@ const BasePage = () => {
           <img 
             src={cityImages[selectedCity.city]} 
             alt={selectedCity.city} 
-            style={{ width: "200px", height: "100px", borderRadius: "10px", marginLeft: "15px" }} 
+            style={{ width: "200px", maxWidth: "100%", height: "100px", objectFit: "cover", borderRadius: "10px" }}
           />
         </div>
       )}

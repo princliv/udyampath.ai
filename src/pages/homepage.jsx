@@ -191,7 +191,8 @@ const styles = {
   container: {
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
+    // Stretch so every section is exactly page-width; centring is done inside each section.
+    alignItems: "stretch",
     width: "100%",
     backgroundColor: "#ffffff",
   },

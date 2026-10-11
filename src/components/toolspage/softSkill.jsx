@@ -65,17 +65,20 @@ const SoftSkill = () => {
         />
 
         {/* Display Two Images */}
-        <div style={{ display: "flex", gap: "10px" }}>
+        <div style={{ display: "flex", gap: "10px", flex: "0 1 auto", minWidth: 0 }}>
           {[0, 1].map((offset) => {
             const index = (currentIndex + offset) % images.length;
             return (
-              <Link key={index} to={images[index].link}>
+              <Link key={index} to={images[index].link} style={{ display: "block", flex: "0 1 250px", minWidth: 0 }}>
                 <img
                   src={images[index].src}
                   alt={images[index].alt}
                   style={{
-                    width: "250px",
-                    height: "160px",
+                    display: "block",
+                    width: "100%",
+                    height: "auto",
+                    aspectRatio: "250 / 160",
+                    objectFit: "cover",
                     borderRadius: "10px",
                     boxShadow: "0px 4px 8px rgba(0,0,0,0.1)",
                   }}

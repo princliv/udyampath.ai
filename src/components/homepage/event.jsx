@@ -156,7 +156,10 @@ const Event = () => {
           align-items: center;
           background: #f0f4ff;
           padding: 40px;
+          width: 100%;
           max-width: 100%;
+          box-sizing: border-box;
+          overflow: hidden;
         }
 
         .event-slider-wrapper {
@@ -258,6 +261,10 @@ const Event = () => {
         }
 
         @media (max-width: 768px) {
+          .event-container {
+            padding: 24px 16px;
+          }
+
           .event-card {
             flex: 0 0 100%;
           }

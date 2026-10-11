@@ -438,19 +438,21 @@ const styles = {
   },
   content: {
     display: 'flex',
+    flexWrap: 'wrap',
     maxWidth: '1400px',
     margin: '2rem auto',
-    padding: '0 2rem',
+    padding: '0 clamp(1rem, 4vw, 2rem)',
     gap: '2rem',
     flex: '1',
   },
+  // Side by side on desktop, stacked on tablets and phones.
   leftPanel: {
-    flex: '1',
-    minWidth: '350px',
+    flex: '1 1 350px',
+    minWidth: 0,
   },
   rightPanel: {
-    flex: '1.5',
-    minWidth: '500px',
+    flex: '1.5 1 500px',
+    minWidth: 0,
   },
   uploadCard: {
     backgroundColor: '#f9fafb',

@@ -19,15 +19,16 @@ const JobPage = () => {
       }}
     >
       {/* Top Section with Two Cards */}
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "20px" }}>
         {/* Left Rectangle */}
-        <div style={{ 
-          background: "#131346", 
-          color: "white", 
-          padding: "20px", 
-          borderRadius: "10px", 
-          width: "250px", 
-          textAlign: "center" 
+        <div style={{
+          background: "#131346",
+          color: "white",
+          padding: "20px",
+          borderRadius: "10px",
+          flex: "1 1 250px",
+          maxWidth: "100%",
+          textAlign: "center"
         }}>
           <h2>Chat with your perfect Buddy</h2>
           <button 
@@ -54,18 +55,18 @@ const JobPage = () => {
           backgroundRepeat: "no-repeat",
           padding: "20px", 
           borderRadius: "10px", 
-          flex: 1, 
-          marginLeft: "20px" 
+          flex: "999 1 320px",
+          minWidth: 0
         }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <h2 style={{ fontSize: "30px" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "12px" }}>
+            <h2 style={{ fontSize: "clamp(20px, 4vw, 30px)" }}>
               Get your dream job with <br /><span style={{ color: "#004aad" }}> Interview Prep</span> and 
               <span style={{ color: "#004aad" }}> projects </span>
             </h2>
             <input
               type="text"
               placeholder="Enter"
-              style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "5px", width: "300px" }}
+              style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "5px", width: "100%", maxWidth: "300px" }}
             />
           </div>
           <button style={{ 

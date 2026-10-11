@@ -67,7 +67,7 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     textAlign: "center",
-    padding: "40px",
+    padding: "40px 16px",
     maxWidth: "100%",
   },
   heading: {
@@ -78,10 +78,12 @@ const styles = {
   cardContainer: {
     display: "flex",
     justifyContent: "center",
+    flexWrap: "wrap",
     gap: "20px",
   },
   card: {
-    width: "300px",
+    width: "100%",
+    maxWidth: "300px",
     backgroundColor: "#f5f5f5",
     borderRadius: "10px",
     overflow: "hidden",
