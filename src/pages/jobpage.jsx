@@ -3,6 +3,7 @@ import Details from "../components/jobpage/details";
 import headerBg from "../assets/jobpage/headerbg.png";
 import applyGif from "../assets/jobpage/apply.gif";
 import { useNavigate } from "react-router-dom";
+import { pageShellStyle, SectionColumns } from "../components/shared/sectionColumns";
 
 const JobPage = () => {
   const navigate = useNavigate();
@@ -20,12 +21,12 @@ const JobPage = () => {
   }, [showModal]);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "20px", padding: "20px" }}>
+    <div style={pageShellStyle}>
       
-      {/* Top Section */}
-      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "20px" }}>
-        <div style={{ background: "#131346", color: "white", padding: "20px", borderRadius: "10px", flex: "1 1 250px", maxWidth: "100%", textAlign: "center" }}>
-          <h2>Know the Cost of Living Around You</h2>
+      {/* Top Section — same columns and card size as the course page header */}
+      <SectionColumns>
+        <div style={{ background: "#131346", color: "white", padding: "20px", borderRadius: "10px", textAlign: "left", minWidth: 0 }}>
+          <h2 style={{ fontSize: "clamp(1.65rem, 2vw, 2.2rem)", lineHeight: 1.2, margin: 0 }}>Know the Cost of Living Around You</h2>
           <button 
             style={{ marginTop: "10px", padding: "10px 15px", background: "white", color: "#131346", border: "none", borderRadius: "5px", cursor: "pointer" }} 
             onClick={() => navigate("/base")}
@@ -37,10 +38,10 @@ const JobPage = () => {
         <div style={{ 
           backgroundImage: `url(${headerBg})`, backgroundSize: "cover", 
           backgroundPosition: "center", backgroundRepeat: "no-repeat",
-          padding: "20px", borderRadius: "10px", flex: "999 1 320px", minWidth: 0
+          padding: "20px", borderRadius: "10px", minWidth: 0
         }}>
           <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "12px" }}>
-            <h2 style={{ fontSize: "clamp(20px, 4vw, 28px)" }}>
+            <h2 style={{ fontSize: "30px", margin: 0 }}>
               Get Recommendations based on the <span style={{ color: "#004aad" }}>Salary</span> with<br /> 
               respect to <span style={{ color: "#004aad" }}>Expense</span>
             </h2>
@@ -61,7 +62,7 @@ const JobPage = () => {
             </button>
           </div>
         </div>
-      </div>
+      </SectionColumns>
 
       {/* Pass City Name to Details Component */}
       <Details city={city} />

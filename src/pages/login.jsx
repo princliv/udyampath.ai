@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
-import { signInWithGoogle, signInWithEmail } from "../firebase/firebase";
+import { signInWithGoogle, signInWithEmail, getUserProfile, homeForRole } from "../firebase/firebase";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { FaLinkedin } from "react-icons/fa";
@@ -15,14 +15,17 @@ const Login = ({ isOpen, onClose }) => {
   const isModalMode = typeof isOpen === "boolean";
   const isCompact = useMediaQuery({ maxWidth: 860 });
 
+  const finishAuth = (role) => {
+    navigate(homeForRole(role), { replace: true });
+    if (typeof onClose === "function") {
+      onClose({ redirected: true });
+    }
+  };
+
   const handleGoogleLogin = async () => {
     try {
-      await signInWithGoogle();
-      alert("Google Login Successful");
-      if (typeof onClose === "function") {
-        onClose();
-      }
-      navigate("/homepage");
+      const { profile } = await signInWithGoogle();
+      finishAuth(profile?.userType);
     } catch (error) {
       alert(error.message);
     }
@@ -31,12 +34,9 @@ const Login = ({ isOpen, onClose }) => {
   const handleEmailLogin = async (e) => {
     e.preventDefault();
     try {
-      await signInWithEmail(email, password);
-      alert("Login Successful");
-      if (typeof onClose === "function") {
-        onClose();
-      }
-      navigate("/homepage");
+      const credential = await signInWithEmail(email, password);
+      const profile = await getUserProfile(credential.user.uid);
+      finishAuth(profile?.userType);
     } catch (error) {
       alert(error.message);
     }

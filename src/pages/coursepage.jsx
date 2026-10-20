@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import RecentView from "../components/coursepage/recentView";
@@ -8,6 +8,7 @@ import headerBg from '../assets/coursepage/headerbg.png';
 import CodeEditor from '../components/coursepage/CodeEditor';
 import PageTransition from "../components/shared/PageTransition";
 import AnimatedSection from "../components/shared/AnimatedSection";
+import { pageShellStyle, SectionColumns, useWideLayout } from "../components/shared/sectionColumns";
 
 const CoursePage = () => {
   const [selectedTab, setSelectedTab] = useState("Course");
@@ -21,8 +22,9 @@ const CoursePage = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentChallenge, setCurrentChallenge] = useState(null);
   const [showCodeEditor, setShowCodeEditor] = useState(false);
-  const [isWideLayout, setIsWideLayout] = useState(() => window.innerWidth >= 1024);
+  const isWideLayout = useWideLayout();
   const navigate = useNavigate();
+  const learningTimerRef = useRef(null);
 
   // Daily challenges data
   const dailyChallenges = useMemo(() => [
@@ -187,17 +189,30 @@ const CoursePage = () => {
     setShowModal(!showModal);
   };
 
+  useEffect(() => {
+    return () => {
+      if (learningTimerRef.current) {
+        clearInterval(learningTimerRef.current);
+      }
+    };
+  }, []);
+
   const startLearning = (topic) => {
     setSelectedTopic(topic);
     setTimeLeft(60);
     setIsTimerRunning(true);
     setCurrentIndex(0);
     setDisplayedContent("");
-    
-    const timer = setInterval(() => {
+
+    if (learningTimerRef.current) {
+      clearInterval(learningTimerRef.current);
+    }
+
+    learningTimerRef.current = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
-          clearInterval(timer);
+          clearInterval(learningTimerRef.current);
+          learningTimerRef.current = null;
           setIsTimerRunning(false);
           return 0;
         }
@@ -215,29 +230,9 @@ const CoursePage = () => {
     setShowCodeEditor(false);
   };
 
-  useEffect(() => {
-    const handleResize = () => setIsWideLayout(window.innerWidth >= 1024);
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const twoColumnGrid = isWideLayout
-    ? "minmax(220px, 1fr) minmax(0, 4fr)"
-    : "1fr";
-
   return (
     <PageTransition>
-      <div style={{ 
-      display: "flex", 
-      flexDirection: "column", 
-      gap: "20px", 
-      padding: "20px",
-      overflowX: "hidden",
-      position: "relative",
-      background: "#ffffff",
-      borderRadius: "16px",
-    }}>
+      <div style={pageShellStyle}>
       {/* Code Editor Overlay */}
       {showCodeEditor && currentChallenge && (
         <div style={{
@@ -1033,7 +1028,7 @@ const CoursePage = () => {
       )}
 
       {/* Top Section */}
-      <div style={{ display: "grid", gridTemplateColumns: twoColumnGrid, gap: "20px" }}>
+      <SectionColumns>
         <div style={{ 
           background: "#e4deff", 
           color: "black", 
@@ -1121,10 +1116,10 @@ const CoursePage = () => {
             Select a topic and learn its essentials in just one minute. Perfect for quick knowledge boosts!
           </p>
         </div>
-      </div>
+      </SectionColumns>
 
       {/* Main Content Area */}
-      <div style={{ display: "grid", gridTemplateColumns: twoColumnGrid, gap: "20px", alignItems: "start" }}>
+      <SectionColumns align="start">
         {/* Left Sidebar - Now with single Job Simulator card */}
         <div style={{ 
           width: "100%", 
@@ -1518,7 +1513,7 @@ const CoursePage = () => {
             {selectedTab === "My Learnings" && <MyLearningsContent />}
           </AnimatedSection>
         </div>
-      </div>
+      </SectionColumns>
       </div>
     </PageTransition>
   );

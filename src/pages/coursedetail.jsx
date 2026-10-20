@@ -12,6 +12,9 @@ const CourseDetails = () => {
     setExpandedIndex(expandedIndex === index ? null : index);
   };
 
+  const exerciseCount = course?.exercises ?? course?.Quiz?.length ?? course?.pathway?.length ?? 0;
+  const projectCount = course?.projects ?? 0;
+
   if (!course) {
     return (
       <div style={styles.errorContainer}>
@@ -70,13 +73,13 @@ const CourseDetails = () => {
                 <svg style={styles.activityIcon} viewBox="0 0 24 24">
                   <path fill="currentColor" d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
                 </svg>
-                {course.exercises} coding exercises
+                {exerciseCount} coding exercises
               </span>
               <span style={styles.activityItem}>
                 <svg style={styles.activityIcon} viewBox="0 0 24 24">
                   <path fill="currentColor" d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
                 </svg>
-                {course.projects} projects
+                {projectCount} projects
               </span>
             </div>
             
@@ -122,7 +125,7 @@ const CourseDetails = () => {
                       <span style={styles.moduleTitleText}>{step.title}</span>
                       {expandedIndex !== index && (
                         <p style={styles.modulePreviewText}>
-                          {step.details.split("\n")[0].substring(0, 60)}...
+                          {(step.details || "").split("\n")[0].substring(0, 60)}...
                         </p>
                       )}
                     </div>
@@ -134,7 +137,7 @@ const CourseDetails = () => {
                 {expandedIndex === index && (
                   <div style={styles.moduleContent}>
                     <div style={styles.moduleDetails}>
-                      {step.details.split("\n\nTopics Covered:\n-").map((section, i) => (
+                      {(step.details || "").split("\n\nTopics Covered:\n-").map((section, i) => (
                         i === 0 ? <p key={i} style={styles.moduleDescription}>{section}</p> : 
                         <div key={i}>
                           <h4 style={styles.topicsTitle}>Topics Covered:</h4>
@@ -148,7 +151,7 @@ const CourseDetails = () => {
                     </div>
                     <div style={styles.moduleActions}>
                       <button
-                        onClick={() => navigate("/module", { state: { module: step } })}
+                        onClick={() => navigate("/module", { state: { module: course, moduleIndex: index } })}
                         style={styles.secondaryButton}
                       >
                         Start Module
@@ -178,7 +181,7 @@ const CourseDetails = () => {
                     ...styles.supportCard,
                     backgroundColor: item.bgColor,
                   }}
-                  onClick={() => index === 0 && navigate('/ai-mentor')}
+                  onClick={() => index === 0 && navigate("/ai-mentor")}
                 >
                   <div style={styles.supportIcon}>
                     {index === 0 && (
