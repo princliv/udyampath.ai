@@ -27,8 +27,7 @@ const SoftSkill = () => {
     <div
       style={{
         textAlign: "center",
-        maxWidth: "900px",
-        margin: "auto",
+        width: "100%",
         padding: "20px",
         background: "#fff",
         borderRadius: "10px",

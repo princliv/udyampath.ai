@@ -15,6 +15,7 @@ const JobSimulator = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [timer, setTimer] = useState(0);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [behavioralQuestion, setBehavioralQuestion] = useState("");
 
   // Simulate API fetch with loading state
   useEffect(() => {
@@ -127,6 +128,8 @@ const JobSimulator = () => {
       setSystemDesignAnswer("");
     } else if (section === "Behavioral Interview") {
       setBehavioralAnswer("");
+      const index = Math.floor(Math.random() * behavioralQuestions.length);
+      setBehavioralQuestion(behavioralQuestions[index]);
     }
   };
 
@@ -868,8 +871,6 @@ const JobSimulator = () => {
   }
 
   if (activeSection === "Behavioral Interview") {
-    const randomBehavioralQuestion = behavioralQuestions[Math.floor(Math.random() * behavioralQuestions.length)];
-    
     return (
       <motion.div
         initial={{ opacity: 0 }}
@@ -931,7 +932,7 @@ const JobSimulator = () => {
               borderLeft: "4px solid #004aad"
             }}>
               <p style={{ margin: 0, lineHeight: "1.6", fontStyle: "italic" }}>
-                "{randomBehavioralQuestion}"
+                "{behavioralQuestion}"
               </p>
             </div>
           </div>

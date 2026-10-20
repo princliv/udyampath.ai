@@ -8,7 +8,7 @@ import {
   setPersistence,
   browserLocalPersistence
 } from "firebase/auth";
-import { getDatabase, ref, set } from "firebase/database";
+import { get, getDatabase, ref, set } from "firebase/database";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
@@ -34,23 +34,46 @@ setPersistence(auth, browserLocalPersistence).catch((error) => {
   console.error("Auth persistence setup failed:", error.message);
 });
 
-// ✅ Google Sign-In with User Data Saving
-export const signInWithGoogle = async () => {
+const splitDisplayName = (displayName) => {
+  const parts = (displayName || "").split(" ").filter(Boolean);
+  return {
+    firstName: parts[0] || "",
+    lastName: parts.slice(1).join(" "),
+  };
+};
+
+export const getUserProfile = async (uid) => {
+  const snapshot = await get(ref(database, `users/${uid}`));
+  return snapshot.exists() ? snapshot.val() : null;
+};
+
+export const homeForRole = (userType) =>
+  String(userType || "").toLowerCase() === "recruiter" ? "/recruiter" : "/homepage";
+
+// Creates users/{uid} only when it is missing, so a later Google sign-in
+// cannot overwrite an existing role.
+export const signInWithGoogle = async (options = {}) => {
   try {
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
-
-    // Save user data to Realtime Database
     const userRef = ref(database, `users/${user.uid}`);
-    await set(userRef, {
-      firstName: user.displayName.split(" ")[0] || "",
-      lastName: user.displayName.split(" ")[1] || "",
-      email: user.email,
-      profilePicture: user.photoURL || "",
-      userType: "Candidate",
-    });
+    const snapshot = await get(userRef);
 
-    return user;
+    if (snapshot.exists()) {
+      return { user, profile: snapshot.val() };
+    }
+
+    const { firstName, lastName } = splitDisplayName(user.displayName);
+    const requested = String(options.userType || "Candidate");
+    const profile = {
+      firstName,
+      lastName,
+      email: user.email || "",
+      profilePicture: user.photoURL || "",
+      userType: requested.toLowerCase() === "recruiter" ? "Recruiter" : "Candidate",
+    };
+    await set(userRef, profile);
+    return { user, profile };
   } catch (error) {
     console.error("Google Sign-In Error:", error.message);
     throw error;

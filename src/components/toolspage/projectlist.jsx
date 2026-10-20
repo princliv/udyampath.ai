@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import headerBg from '../../assets/toolpage/headerbgtools.png'; // Adjust the path to your actual image
 import { AiOutlineEye } from 'react-icons/ai';
+import { pageShellStyle, SectionColumns } from '../shared/sectionColumns';
 
 // Explicitly import each image
 import image1 from '../../assets/toolpage/project1.png';
@@ -45,18 +46,16 @@ const ProjectList = () => {
   });
 
   return (
-    <div style={{ padding: '20px', backgroundColor: '#ffffff' }}>
-      {/* Top Section */}
-      <div style={{ display: "flex", marginBottom: "40px", flexWrap: 'wrap', gap: '20px' }}>
-        {/* Left Rectangle */}
+    <div style={pageShellStyle}>
+      <SectionColumns>
         <div style={{
           background: "#88aefe",
           color: "black",
           padding: "20px",
           borderRadius: "10px",
-          width: "250px",
+          minWidth: 0,
         }}>
-          <h2 style={{ fontSize: '16px' }}>Mastering the Art of Crafting an Outstanding Portfolio</h2>
+          <h2 style={{ fontSize: "clamp(1.65rem, 2vw, 2.2rem)", lineHeight: 1.2, margin: 0 }}>Mastering the Art of Crafting an Outstanding Portfolio</h2>
           <button
             style={{
               marginTop: "10px",
@@ -80,11 +79,10 @@ const ProjectList = () => {
           backgroundPosition: "center",
           padding: "20px",
           borderRadius: "10px",
-          flex: 1,
-          minWidth: 'min(300px, 100%)',
+          minWidth: 0,
         }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "clamp(12px, 4vw, 50px)", flexWrap: "wrap", marginBottom: "20px" }}>
-            <h2 style={{ fontSize: "clamp(20px, 4vw, 30px)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "12px", flexWrap: "wrap" }}>
+            <h2 style={{ fontSize: "30px", margin: 0 }}>
               Build Your <span style={{ color: "#004aad" }}>Portfolio</span> by Exploring & Working <br />
               on Impactful <span style={{ color: "#004aad" }}>Projects</span>
             </h2>
@@ -120,23 +118,12 @@ const ProjectList = () => {
             </div>
           </div>
         </div>
-      </div>
+      </SectionColumns>
 
-      <div
-        style={{
-          display: 'flex',
-          maxWidth: '1200px',
-          margin: 'auto',
-          flexDirection: window.innerWidth < 768 ? 'column' : 'row',
-          gap: '20px',
-          height: 'calc(100vh - 220px)',
-          boxSizing: 'border-box',
-        }}
-
-      >
+      <SectionColumns align="start">
 
         {/* Left: Project Cards */}
-        <div style={{ flex: 2, overflowY: 'auto', paddingRight: '20px' }}>
+        <div style={{ minWidth: 0 }}>
           <div
             style={{
               display: 'grid',
@@ -200,13 +187,11 @@ const ProjectList = () => {
         {/* Right: Project Details */}
         <div
           style={{
-            flex: 2,
+            minWidth: 0,
             background: '#ffffff',
             padding: '30px',
             borderRadius: '15px',
             boxShadow: '0 12px 30px rgba(0, 0, 0, 0.1)',
-            overflowY: 'auto',
-            transition: 'all 0.3s ease',
           }}
         >
           {selectedProject ? (
@@ -242,7 +227,7 @@ const ProjectList = () => {
             </div>
           )}
         </div>
-      </div>
+      </SectionColumns>
     </div>
   );
 };

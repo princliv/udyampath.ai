@@ -79,7 +79,7 @@ const PlaceTest = () => {
   const currentQuestion = testData.questions[currentQuestionIndex];
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div style={{ padding: "20px", width: "100%", boxSizing: "border-box", background: "#ffffff", borderRadius: "16px" }}>
       {/* Title and Description */}
       {title && <h2>{title}</h2>}
       {description && <p>{description}</p>}

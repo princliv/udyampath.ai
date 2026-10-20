@@ -40,6 +40,8 @@ const NotesPage = lazy(() => import("./pages/notespage"));
 const Profile = lazy(() => import("./pages/profile"));
 const Recruiter = lazy(() => import("./pages/recruiter"));
 const ToolsPage = lazy(() => import("./pages/toolspage"));
+const ComingSoon = lazy(() => import("./pages/ComingSoon"));
+const SpecializationPage = lazy(() => import("./components/coursepage/SpecializationPage"));
 const JobSimulator = lazy(() => import("./components/coursepage/JobSimulator"));
 const ResumeCheck = lazy(() => import("./components/jobpage/ResumeCheck"));
 const InterCheck = lazy(() => import("./components/jobpage/InterviewCheck"));
@@ -81,16 +83,34 @@ function AppContent() {
   const [isMobileProfileMenuOpen, setIsMobileProfileMenuOpen] = useState(false);
   const mobileProfileMenuRef = useRef(null);
 
+  const founderSeenKey = user?.uid
+    ? `udyampath-founder-seen:${user.uid}`
+    : "udyampath-founder-seen:guest";
+
   useEffect(() => {
+    if (isAuthLoading) return undefined;
+
+    let alreadySeen = false;
+    try {
+      alreadySeen = localStorage.getItem(founderSeenKey) === "1";
+    } catch (error) {
+      alreadySeen = false;
+    }
+    if (alreadySeen) return undefined;
+
     const timer = setTimeout(() => {
       setShowModal(true);
-    }, 20000);  // 20 seconds timeout
+    }, 20000);
 
-    // Cleanup the timer when the component unmounts
     return () => clearTimeout(timer);
-  }, []);
+  }, [founderSeenKey, isAuthLoading]);
 
   const handleCloseModal = () => {
+    try {
+      localStorage.setItem(founderSeenKey, "1");
+    } catch (error) {
+      console.error("Could not remember founder note:", error);
+    }
     setShowModal(false);
   };
 
@@ -175,8 +195,10 @@ function AppContent() {
     setIsModalOpen(true);
   };
 
-  const closeAuthModal = () => {
+  const closeAuthModal = (result) => {
     setIsModalOpen(false);
+    // Auth already sent the user to the route that matches their stored role.
+    if (result?.redirected) return;
     if (isAuthPage) {
       navigate("/homepage", { replace: true });
     }
@@ -671,6 +693,8 @@ function AppContent() {
         <Route path="/jobDetails" element={<JobDetail />} />
         
         <Route path="/job-simulator" element={<JobSimulator />} />
+        <Route path="/specializations" element={<SpecializationPage />} />
+        <Route path="/ai-mentor" element={<ComingSoon title="AI Mentor" />} />
         <Route path="/resume-check" element={<ResumeCheck />} />
         <Route path="/interview-checklist" element={<InterCheck />} />
 
