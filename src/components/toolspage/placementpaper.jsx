@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 // Import images locally
 import amazonIcon from "../../assets/jobpage/amazon.png";
 import googleIcon from "../../assets/jobpage/google.png";
-import microsoftIcon from "../../assets/jobpage/google.png";
+import microsoftIcon from "../../assets/jobpage/microsoft.svg";
 
 // Mapping company names to their icons
 const companyIcons = {
@@ -45,7 +45,7 @@ const PlacementPaper = () => {
   const tabs = Object.keys(practiceData);
 
   return (
-    <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
+    <div style={{ padding: "20px", width: "100%", boxSizing: "border-box", background: "#ffffff", borderRadius: "16px", fontFamily: "Arial, sans-serif" }}>
       {/* Top Company's Placement Sheet */}
       <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
         Top Company's Placement Sheet

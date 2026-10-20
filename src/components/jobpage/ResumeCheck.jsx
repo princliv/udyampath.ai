@@ -4,6 +4,7 @@ import * as pdfjsLib from "pdfjs-dist";
 import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 import { FaFileUpload, FaCheckCircle, FaTimesCircle, FaRobot, FaClipboardList, FaChartPie, FaArrowRight, FaLightbulb, FaSearch } from "react-icons/fa";
 import { FiRefreshCw } from "react-icons/fi";
+import { SectionColumns } from "../shared/sectionColumns";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
@@ -193,7 +194,7 @@ const ResumeCheck = () => {
         <p style={styles.subtitle}>Optimize your resume for any job with AI-powered analysis</p>
       </div>
 
-      <div style={styles.content}>
+      <SectionColumns align="start">
         <div style={styles.leftPanel}>
           <div 
             style={styles.uploadCard}
@@ -398,7 +399,7 @@ const ResumeCheck = () => {
             </div>
           )}
         </div>
-      </div>
+      </SectionColumns>
       
       <div style={styles.footer}>
         <p>© 2023 ResumeCheck Pro | AI-Powered Resume Optimization</p>
@@ -413,7 +414,7 @@ const styles = {
     minHeight: '100vh',
     fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
     color: '#1f2937',
-    padding: '0',
+    padding: '20px',
     display: 'flex',
     flexDirection: 'column',
   },
@@ -436,22 +437,10 @@ const styles = {
     opacity: '0.9',
     margin: '0.5rem 0 0',
   },
-  content: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    maxWidth: '1400px',
-    margin: '2rem auto',
-    padding: '0 clamp(1rem, 4vw, 2rem)',
-    gap: '2rem',
-    flex: '1',
-  },
-  // Side by side on desktop, stacked on tablets and phones.
   leftPanel: {
-    flex: '1 1 350px',
     minWidth: 0,
   },
   rightPanel: {
-    flex: '1.5 1 500px',
     minWidth: 0,
   },
   uploadCard: {

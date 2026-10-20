@@ -72,9 +72,9 @@ const styles = {
     textAlign: "center",
   },
   heading: {
-    fontSize: "36px",
+    fontSize: "var(--fs-h2)",
     marginBottom: "40px",
-    fontWeight: "bold",
+    fontWeight: 700,
     color: "#333",
   },
   stepsWrapper: {

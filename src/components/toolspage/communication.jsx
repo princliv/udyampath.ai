@@ -81,7 +81,7 @@ const CommunicationPractice = () => {
   };
 
   return (
-    <div style={{ textAlign: "center", padding: "20px", maxWidth: "600px", margin: "auto" }}>
+    <div style={{ textAlign: "center", padding: "20px", width: "100%", boxSizing: "border-box" }}>
       <h2>🗣️ Communication Practice</h2>
 
       {/* Instructions Section */}

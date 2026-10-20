@@ -26,6 +26,15 @@ const ModulePage = () => {
                     (mod) => mod.title === location.state?.module?.title
                 );
                 setModuleData(selectedModule);
+                const requestedIndex = Number(location.state?.moduleIndex);
+                if (
+                    selectedModule?.pathway &&
+                    Number.isInteger(requestedIndex) &&
+                    requestedIndex >= 0 &&
+                    requestedIndex < selectedModule.pathway.length
+                ) {
+                    setSelectedModuleIndex(requestedIndex);
+                }
                 
                 // Set quiz data if available
                 if (selectedModule?.Quiz) {

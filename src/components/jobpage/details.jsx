@@ -1,5 +1,4 @@
 import React, { useMemo, useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
 
 import amazonLogo from "../../assets/jobpage/amazon.png";
 import googleLogo from "../../assets/jobpage/google.png";
@@ -9,6 +8,7 @@ import CityDetailsModal from "../jobpage/CityDetailsModal";
 
 import { useNavigate } from "react-router-dom";
 import { CONTENT_TYPES, fetchRecruiterContent } from "../../firebase/recruiterContent";
+import { SectionColumns } from "../shared/sectionColumns";
 
 
 
@@ -18,7 +18,7 @@ const logoMap = {
   "Apple": appleLogo,
 };
 
-const Details = () => {
+const Details = ({ city = "" }) => {
   const navigate = useNavigate();
   const [jobs, setJobs] = useState([]);
   const [interns, setInterns] = useState([]);
@@ -126,36 +126,67 @@ const Details = () => {
   }, [currentData, typeFilter, levelFilter]);
   
   
-  const { city } = useParams(); // Get city from URL
   const [cityInfo, setCityInfo] = useState(null);
+  const [cityLookup, setCityLookup] = useState("idle");
 
   useEffect(() => {
-    fetch(`/citydata.json`) // Replace with your API
+    const query = String(city || "").trim().toLowerCase();
+    if (!query) {
+      setCityInfo(null);
+      setCityLookup("idle");
+      return undefined;
+    }
+
+    let cancelled = false;
+    setCityLookup("loading");
+    fetch("/citydata.json")
       .then((res) => res.json())
       .then((data) => {
-        const selectedCity = data.find((c) => c.name === city);
-        setCityInfo(selectedCity);
+        if (cancelled) return;
+        const selectedCity = (Array.isArray(data) ? data : []).find(
+          (entry) => String(entry.city || "").trim().toLowerCase() === query
+        );
+        setCityInfo(selectedCity || null);
+        setCityLookup(selectedCity ? "ready" : "missing");
       })
-      .catch((error) => console.error("Error fetching city data:", error));
+      .catch((error) => {
+        console.error("Error fetching city data:", error);
+        if (!cancelled) {
+          setCityInfo(null);
+          setCityLookup("missing");
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [city]);
 
   const total_expense = cityInfo?.total_expense || 0;
+  const cityReady = cityLookup === "ready";
 
   const displayJobs = useMemo(
-    () => filteredJobs.map((job) => ({ ...job, isAffordable: Number(job.salary) > Number(total_expense) })),
-    [filteredJobs, total_expense]
+    () =>
+      filteredJobs.map((job) => ({
+        ...job,
+        isAffordable: cityReady && Number(job.salary) > Number(total_expense),
+      })),
+    [filteredJobs, total_expense, cityReady]
   );
-  
-  if (!cityInfo) return <p>Loading city details...</p>;
   
 
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "20px", padding: "0px" }}>
-  {/* Left Sidebar (full width above the list on small screens) */}
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px", width: "100%" }}>
+      {cityLookup === "missing" && (
+        <p style={{ width: "100%", margin: 0, fontSize: "16px", color: "#555" }}>
+          No cost-of-living data for “{city}”. Showing every role without an affordability check.
+        </p>
+      )}
+    <SectionColumns align="start">
+  {/* Left Sidebar */}
   <div
   style={{
-    flex: "1 1 242px",
-    maxWidth: "100%",
+    minWidth: 0,
     borderRadius: "16px",
     background: "#fff",
     boxShadow: "0 8px 24px rgba(0, 0, 0, 0.1)",
@@ -313,7 +344,7 @@ const Details = () => {
 
 
   {/* Right Section */}
-  <div style={{ flex: "999 1 300px", minWidth: 0 }}>
+  <div style={{ minWidth: 0 }}>
       {/* Toggle Buttons */}
       <div style={{
         display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px"
@@ -359,7 +390,8 @@ const Details = () => {
               boxShadow: "0px 8px 20px rgba(0,0,0,0.05)",
               overflow: "hidden",
               transition: "transform 0.3s ease, box-shadow 0.3s ease",
-              cursor: "pointer"
+              cursor: "pointer",
+              position: "relative",
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = "scale(1.02)";
@@ -463,30 +495,33 @@ const Details = () => {
 
           
           {/* Done Image if Affordable */}
-          {job.isAffordable && (
+          {cityReady && (
               <div style={{
                 position: "absolute",
-                top: "80px",
-                left: "20px",
-                backgroundColor: "rgba(255, 255, 0, 0.5)",
+                top: "88px",
+                left: "12px",
+                backgroundColor: job.isAffordable ? "rgba(155, 230, 193, 0.95)" : "rgba(254, 215, 170, 0.95)",
                 padding: "5px 10px",
-                borderRadius: "5px",
+                borderRadius: "999px",
                 display: "flex",
                 alignItems: "center",
                 zIndex: 1
               }}>
-                <img src={doneImg} alt="Done" style={{ width: "20px", marginRight: "5px" }} />
+                {job.isAffordable && (
+                  <img src={doneImg} alt="" style={{ width: "16px", marginRight: "5px" }} />
+                )}
                 <button
                   onClick={() => setIsCityModalOpen(true)}
                   style={{
                     backgroundColor: "transparent",
                     border: "none",
-                    fontWeight: "bold",
-                    color: "#333",
+                    fontWeight: 600,
+                    fontSize: "12px",
+                    color: "#1e293b",
                     cursor: "pointer"
                   }}
                 >
-                  View Details
+                  {job.isAffordable ? "Affordable" : "Above budget"}
                 </button>
               </div>
             )}
@@ -499,6 +534,7 @@ const Details = () => {
     {isCityModalOpen && <CityDetailsModal cityInfo={cityInfo} onClose={() => setIsCityModalOpen(false)} style={{ zIndex: 1000 }} />}
 
   </div>
+    </SectionColumns>
 </div>
   );
 };

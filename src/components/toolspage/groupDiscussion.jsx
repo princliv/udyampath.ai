@@ -60,8 +60,8 @@ const GroupDiscussion = () => {
     <div
       style={{
         fontFamily: "Poppins, sans-serif",
-        maxWidth: "900px",
-        margin: "auto",
+        width: "100%",
+        boxSizing: "border-box",
         padding: "20px",
         background: "linear-gradient(135deg, #ffffff, #f3f8ff)",
         borderRadius: "15px",

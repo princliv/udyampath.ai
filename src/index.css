@@ -3,9 +3,18 @@
    ============================================ */
 
 :root {
-  /* Typography */
+  /* Typography — Astryd / Athena scale: 42px display, 16–18px body */
   --font-primary: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --font-mono: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  --fs-display: clamp(1.75rem, 1.1rem + 2vw, 2.625rem);
+  --fs-h1: clamp(1.875rem, 1.4rem + 1vw, 2.25rem);
+  --fs-h2: clamp(1.5rem, 1.2rem + 0.7vw, 1.875rem);
+  --fs-h3: 1.5rem;
+  --fs-h4: 1.25rem;
+  --fs-body-lg: 1.125rem;
+  --fs-body: 1rem;
+  --fs-sm: 0.875rem;
+  --fs-caption: 0.75rem;
 
   /* Section Color Themes */
   /* Homepage - Blue */
@@ -89,19 +98,24 @@
 
 html {
   scroll-behavior: smooth;
+  /* One scroll container only. Clipping x on body as well makes Chrome
+     turn body into a second vertical scroller that shows on load and
+     disappears after the first scroll. */
+  overflow-x: clip;
+  overflow-y: auto;
 }
 
 body {
   margin: 0;
   font-family: var(--font-primary);
+  font-size: var(--fs-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: #ffffff;
   color: #333333;
-  line-height: 1.6;
-  /* Safety net: the page itself never scrolls sideways. `clip` (unlike `hidden`)
-     keeps the sticky header working. Wide content should still be fixed at the source. */
-  overflow-x: clip;
+  line-height: 1.5;
+  max-width: 100%;
+  overflow: visible;
 }
 
 code {
@@ -113,37 +127,39 @@ code {
    ============================================ */
 
 h1 {
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  font-weight: 800;
-  line-height: 1.2;
-  letter-spacing: -0.5px;
+  font-size: var(--fs-h1);
+  font-weight: 700;
+  line-height: 1.22;
+  letter-spacing: -0.02em;
 }
 
 h2 {
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-size: var(--fs-h2);
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 1.27;
+  letter-spacing: -0.015em;
 }
 
 h3 {
-  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  font-size: var(--fs-h3);
+  font-weight: 600;
+  line-height: 1.33;
+}
+
+h4 {
+  font-size: var(--fs-h4);
   font-weight: 600;
   line-height: 1.4;
 }
 
-h4 {
-  font-size: 1.125rem;
-  font-weight: 600;
-}
-
 p {
-  font-size: 1rem;
+  font-size: var(--fs-body);
   font-weight: 400;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 small {
-  font-size: 0.875rem;
+  font-size: var(--fs-sm);
   font-weight: 500;
 }
 
@@ -377,18 +393,6 @@ small {
   :root {
     --space-lg: 16px;
     --space-xl: 24px;
-  }
-
-  h1 {
-    font-size: 1.75rem;
-  }
-
-  h2 {
-    font-size: 1.5rem;
-  }
-
-  h3 {
-    font-size: 1.25rem;
   }
 
   .container {

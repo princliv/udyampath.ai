@@ -82,14 +82,12 @@ const Adaptability = () => {
 
   return (
     <div style={{
-      maxWidth: "600px",
-      margin: "40px auto",
-      padding: "30px",
+      width: "100%",
+      boxSizing: "border-box",
+      padding: "20px",
       backgroundColor: "#fff",
-      borderRadius: "20px",
-      boxShadow: "0 6px 15px rgba(0, 0, 0, 0.1)",
+      borderRadius: "16px",
       fontFamily: "'Roboto', sans-serif",
-      background: "linear-gradient(135deg, #dfe9f3 10%, white 100%)"
     }}>
       <h2 style={{ textAlign: "center", color: "#3b3b3b", marginBottom: "10px", fontSize: "28px", fontWeight: "bold" }}>
         Improving Adaptability

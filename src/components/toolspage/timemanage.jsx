@@ -108,7 +108,7 @@ const TimeManagement = () => {
   
 
   return (
-    <div style={{ maxWidth: "800px", margin: "40px auto", padding: "20px", fontFamily: "Arial, sans-serif" }}>
+    <div style={{ width: "100%", boxSizing: "border-box", padding: "20px", fontFamily: "Arial, sans-serif" }}>
       <h2 style={{ textAlign: "center", color: "#333" }}>Time Management & Challenges</h2>
 
       {/* Challenge Selection */}

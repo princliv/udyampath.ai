@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { signInWithGoogle, signInWithEmail, signUpWithEmail } from "../firebase/firebase";
+import { signInWithGoogle, signInWithEmail, signUpWithEmail, getUserProfile, homeForRole } from "../firebase/firebase";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { FaLinkedin } from "react-icons/fa";
@@ -38,13 +38,19 @@ const AuthModal = ({ isOpen, onClose, initialMode = "login" }) => {
     setShowConfirmPassword(false);
   };
 
+  const finishAuth = (role) => {
+    navigate(homeForRole(role), { replace: true });
+    onClose({ redirected: true });
+    resetForm();
+  };
+
   const handleGoogleLogin = async () => {
     setLoading(true);
     try {
-      await signInWithGoogle();
-      navigate(userType === "recruiter" ? "/recruiter" : "/homepage");
-      onClose();
-      resetForm();
+      const { profile } = await signInWithGoogle({
+        userType: userType === "recruiter" ? "Recruiter" : "Candidate",
+      });
+      finishAuth(profile?.userType);
     } catch (error) {
       alert(error.message);
     } finally {
@@ -64,21 +70,14 @@ const AuthModal = ({ isOpen, onClose, initialMode = "login" }) => {
           return;
         }
 
-        await signUpWithEmail(
-          email,
-          password,
-          firstName,
-          lastName,
-          "",
-          userType === "recruiter" ? "Recruiter" : "Candidate"
-        );
+        const role = userType === "recruiter" ? "Recruiter" : "Candidate";
+        await signUpWithEmail(email, password, firstName, lastName, "", role);
+        finishAuth(role);
       } else {
-        await signInWithEmail(email, password);
+        const credential = await signInWithEmail(email, password);
+        const profile = await getUserProfile(credential.user.uid);
+        finishAuth(profile?.userType);
       }
-
-      navigate(userType === "recruiter" ? "/recruiter" : "/homepage");
-      onClose();
-      resetForm();
     } catch (error) {
       alert(error.message);
     } finally {

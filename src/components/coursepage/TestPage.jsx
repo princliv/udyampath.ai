@@ -45,33 +45,52 @@ const TestPage = () => {
     }
   }, [blockLeave]);
 
-  // Handle camera stream
-  const startVideo = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
-      streamRef.current = stream;
-      if (videoRefPreview.current) videoRefPreview.current.srcObject = stream;
-      if (videoRefSmall.current) videoRefSmall.current.srcObject = stream;
-      console.log("Camera started successfully");
-    } catch (error) {
-      console.error("Error accessing camera:", error);
-    }
-  };
-
   const stopVideo = () => {
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop());
       streamRef.current = null;
     }
+    if (videoRefPreview.current) videoRefPreview.current.srcObject = null;
+    if (videoRefSmall.current) videoRefSmall.current.srcObject = null;
   };
 
   useEffect(() => {
+    let cancelled = false;
+
+    const startVideo = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
+        if (cancelled) {
+          stream.getTracks().forEach((track) => track.stop());
+          return;
+        }
+        streamRef.current = stream;
+        if (videoRefPreview.current) videoRefPreview.current.srcObject = stream;
+        if (videoRefSmall.current) videoRefSmall.current.srcObject = stream;
+      } catch (error) {
+        console.error("Error accessing camera:", error);
+      }
+    };
+
     if (cameraEnabled) {
       startVideo();
     } else {
       stopVideo();
     }
+
+    return () => {
+      cancelled = true;
+      stopVideo();
+    };
   }, [cameraEnabled]);
+
+  useEffect(() => {
+    if (!cameraEnabled || !streamRef.current) return;
+    const activeVideo = showTest ? videoRefSmall.current : videoRefPreview.current;
+    if (activeVideo && activeVideo.srcObject !== streamRef.current) {
+      activeVideo.srcObject = streamRef.current;
+    }
+  }, [cameraEnabled, showTest]);
 
   // Face detection
   const detectFace = useCallback(async () => {
@@ -183,6 +202,8 @@ const TestPage = () => {
       alert(`Test completed! Your score: ${finalScore}/${questions.length}`);
     }
 
+    stopVideo();
+    setCameraEnabled(false);
     setShowTest(false);
     setTestStarted(false);
   }

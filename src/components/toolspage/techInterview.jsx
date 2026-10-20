@@ -24,9 +24,9 @@ const TechInterview = () => {
   return (
     <div style={{
       fontFamily: 'Arial, sans-serif',
-      maxWidth: '900px',
-      margin: 'auto',
-      padding: '30px',
+      width: '100%',
+      padding: '20px',
+      boxSizing: 'border-box',
       backgroundColor: '#FAFAFC',
       borderRadius: '12px',
       boxShadow: '0px 5px 12px rgba(0, 0, 0, 0.08)',

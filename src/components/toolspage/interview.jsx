@@ -24,8 +24,6 @@ const Interview = () => {
         padding: "20px",
         textAlign: "center",
         width: "100%",
-        maxWidth: "1500px",
-        margin: "auto",
         background: "#fff",
       }}
     >

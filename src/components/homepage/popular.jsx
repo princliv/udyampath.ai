@@ -435,9 +435,9 @@ const styles = {
   },
   heading: {
     margin: 0,
-    fontSize: "clamp(1.9rem, 4vw, 3rem)",
-    fontWeight: 800,
-    letterSpacing: "-0.03em",
+    fontSize: "var(--fs-display)",
+    fontWeight: 600,
+    letterSpacing: "-0.025em",
     lineHeight: 1.15,
     display: "inline-flex",
     alignItems: "center",

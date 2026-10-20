@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import confusedGif from "../../assets/jobpage/confused.gif"; // Animated icon
 import headerBg from "../../assets/jobpage/headerbg.png"; // Background image for search section
 import BaseDetails from "../jobpage/baseDetails";
+import { pageShellStyle, SectionColumns } from "../shared/sectionColumns";
 
 // Import all city images
 import BengaloreImg from "../../assets/jobpage/Banglore.png";
@@ -50,36 +51,33 @@ const BasePage = () => {
   };
 
   return (
-    <div style={{ textAlign: "center", padding: "50px" }}>
-      {/* Title Section */}
-      <div>
-        <h2 style={{ color: "#004369", fontSize: "28px", fontWeight: "bold" }}>
+    <div style={pageShellStyle}>
+      <SectionColumns>
+      <div style={{ padding: "20px", borderRadius: "10px", background: "#e0f2fe", minWidth: 0, textAlign: "left" }}>
+        <h2 style={{ color: "#004369", fontSize: "clamp(1.65rem, 2vw, 2.2rem)", lineHeight: 1.2, margin: 0 }}>
           Confused About Your Favorite City’s Budget?
           <img 
             src={confusedGif} 
-            alt="Confused Icon" 
-            style={{ width: "120px", height: "120px", verticalAlign: "middle", marginLeft: "15px" }} 
+            alt="" 
+            style={{ width: "72px", height: "72px", verticalAlign: "middle", marginLeft: "12px" }} 
           />
         </h2>
-        <h1 style={{ fontSize: "32px", fontWeight: "bold" }}>
+        <p style={{ fontSize: "18px", fontWeight: 600, marginTop: "12px" }}>
           Uncover the Costs Now!
-        </h1>
+        </p>
       </div>
 
-      {/* Search Section */}
       <div style={{ 
         backgroundImage: `url(${headerBg})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
-        padding: "clamp(16px, 4vw, 30px)",
-        borderRadius: "15px",
-        width: "70%",
-        minWidth: "min(100%, 600px)",
-        margin: "40px auto"
+        padding: "20px",
+        borderRadius: "10px",
+        minWidth: 0,
       }}>
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "12px" }}>
-          <h2 style={{ fontSize: "24px", textAlign: "left" }}>
+          <h2 style={{ fontSize: "30px", textAlign: "left", margin: 0 }}>
             Get Recommendation based on the <span style={{ color: "#004aad" }}>Salary</span> with<br /> 
             respect to <span style={{ color: "#004aad" }}>Expense</span>
           </h2>
@@ -91,24 +89,24 @@ const BasePage = () => {
             style={{ padding: "12px", border: "1px solid #ccc", borderRadius: "8px", width: "100%", maxWidth: "280px", fontSize: "16px" }}
           />
         </div>
+        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "15px" }}>
         <button 
           onClick={handleApply}
           style={{ 
-            marginTop: "15px", 
             padding: "12px 20px", 
             background: "#004aad", 
             color: "white", 
             border: "none", 
             borderRadius: "8px", 
             cursor: "pointer", 
-            width: "120px", 
-            float: "right", 
             fontSize: "16px" 
           }}
         >
           Apply
         </button>
+        </div>
       </div>
+      </SectionColumns>
 
       {/* Selected City Box */}
       {selectedCity && (

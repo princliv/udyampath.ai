@@ -612,15 +612,15 @@ A page is redesigned **in the same phase that rebuilds it**, so no screen is sty
 
 ### Phase 0 — Stabilize what exists *(S)*
 **Goal:** the current app works end-to-end for a demo before any rebuild.
-- [ ] Fix the jobs list: `details.jsx` uses the `city` prop and matches `c.city` (case-insensitive). The list renders even when no city is entered.
-- [ ] Fix Google sign-in: create `users/{uid}` only if it doesn't exist (never overwrite `userType`).
-- [ ] Fix the post-login redirect: wait for the role to load before routing; stop `closeAuthModal` from overriding it.
-- [ ] Fix "Start Module" → module lookup, "undefined coding exercises", and the dead `/specializations` and `/ai-mentor` links (route to a "coming soon" state).
-- [ ] Fix `navigate()` during render (`internApply`, `projectModal`), toolspage `navigate("")`, the JobSimulator re-randomizing question, timer/rAF/interval leaks, and the TestPage camera not stopping.
-- [ ] Fix placement papers: missing PDFs and the Microsoft icon.
-- [ ] Show the founder modal once per user.
-- [ ] Add **baseline Firestore + RTDB + Storage rules** (owner-only users, recruiter-only posts). This is the most urgent security fix.
-- [ ] Set the page `<title>` / manifest to "UdyamPath".
+- [x] Fix the jobs list: `details.jsx` uses the `city` prop and matches `c.city` (case-insensitive). The list renders even when no city is entered.
+- [x] Fix Google sign-in: create `users/{uid}` only if it doesn't exist (never overwrite `userType`).
+- [x] Fix the post-login redirect: wait for the role to load before routing; stop `closeAuthModal` from overriding it.
+- [x] Fix "Start Module" → module lookup, "undefined coding exercises", and the dead `/specializations` and `/ai-mentor` links (`/specializations` opens the existing catalog; `/ai-mentor` is a coming-soon page).
+- [x] Fix `navigate()` during render (`internApply`, `projectModal`), toolspage `navigate("")`, the JobSimulator re-randomizing question, timer/rAF/interval leaks, and the TestPage camera not stopping.
+- [x] Fix placement papers: missing PDFs and the Microsoft icon.
+- [x] Show the founder modal once per user.
+- [x] Add **baseline Firestore + RTDB + Storage rules** (owner-only users, recruiter-only posts). This is the most urgent security fix. Rules are in the repo; deploy with `firebase deploy --only firestore:rules,firestore:indexes,database,storage`.
+- [x] Set the page `<title>` / manifest to "UdyamPath".
 - [x] Move Firebase config out of `firebase.js` into git-ignored env files (`REACT_APP_FIREBASE_*`), with `.env.example` as the template.
 
 🎨 **UI design:** none. Phase 0 is fixes only, so the redesign starts on a working app.

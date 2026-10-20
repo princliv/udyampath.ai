@@ -166,8 +166,8 @@ const HrInterview = () => {
 const styles = {
   container: {
     fontFamily: "Arial, sans-serif",
-    maxWidth: "900px",
-    margin: "auto",
+    width: "100%",
+    boxSizing: "border-box",
     padding: "20px",
     backgroundColor: "#f9f9f9",
     borderRadius: "10px",

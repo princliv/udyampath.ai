@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { createJobApplication } from "../../firebase/recruiterContent";
+import { pageShellStyle, SectionColumns } from "../shared/sectionColumns";
 
 const JobDetail = () => {
   const { state } = useLocation();
@@ -78,20 +79,10 @@ const JobDetail = () => {
     return <p style={{ textAlign: "center", marginTop: "50px" }}>No job data available.</p>;
 
   return (
-    <div style={{
-      padding: "30px",
-      maxWidth: "1000px",
-      margin: "0 auto",
-      backgroundColor: "#fff",
-      borderTop: "4px solid #3f92c3",
-      borderRadius: "20px",
-      display: "flex",
-      gap: "40px",
-      alignItems: "flex-start",
-      flexWrap: "wrap"
-    }}>
+    <div style={{ ...pageShellStyle, borderTop: "4px solid #3f92c3" }}>
+      <SectionColumns align="start">
       {/* Job Info */}
-      <div style={{ flex: 1, minWidth: "300px" }}>
+      <div style={{ minWidth: 0 }}>
         <h2>{job.title}</h2>
         <p><strong>Company:</strong> {job.company}</p>
         <p><strong>Location:</strong> {Array.isArray(job.location) ? job.location.join(", ") : (job.location || "Not specified")}</p>
@@ -117,11 +108,10 @@ const JobDetail = () => {
 
       {/* Application Form */}
       <form onSubmit={handleSubmit} style={{
-        flex: 1,
         display: "flex",
         flexDirection: "column",
         gap: "15px",
-        minWidth: "300px"
+        minWidth: 0
       }}>
         <h3>Apply for this Job</h3>
 
@@ -159,6 +149,7 @@ const JobDetail = () => {
           </div>
         )}
       </form>
+      </SectionColumns>
     </div>
   );
 };

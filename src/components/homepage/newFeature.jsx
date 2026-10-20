@@ -71,8 +71,8 @@ const styles = {
     maxWidth: "100%",
   },
   heading: {
-    fontSize: "28px",
-    fontWeight: 900,
+    fontSize: "var(--fs-h2)",
+    fontWeight: 700,
     marginBottom: "20px",
   },
   cardContainer: {

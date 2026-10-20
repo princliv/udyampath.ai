@@ -99,32 +99,36 @@ const NotesPage = () => {
   const notificationRefs = useRef([]);
 
   useEffect(() => {
-    const animateNotifications = () => {
-      notificationRefs.current.forEach((container, index) => {
-        if (!container) return;
-        
-        const text = container.querySelector('span');
-        if (!text) return;
-        
-        const containerWidth = container.offsetWidth;
-        const textWidth = text.offsetWidth;
-        
-        if (textWidth > containerWidth) {
-          let position = 0;
-          const animation = () => {
-            position -= 0.5;
-            if (position < -textWidth) {
-              position = containerWidth;
-            }
-            text.style.transform = `translateX(${position}px)`;
-            requestAnimationFrame(animation);
-          };
-          animation();
-        }
-      });
-    };
+    const frameIds = [];
+    let stopped = false;
 
-    animateNotifications();
+    notificationRefs.current.forEach((container) => {
+      if (!container) return;
+
+      const text = container.querySelector("span");
+      if (!text) return;
+
+      const containerWidth = container.offsetWidth;
+      const textWidth = text.offsetWidth;
+      if (textWidth <= containerWidth) return;
+
+      let position = 0;
+      const animation = () => {
+        if (stopped) return;
+        position -= 0.5;
+        if (position < -textWidth) {
+          position = containerWidth;
+        }
+        text.style.transform = `translateX(${position}px)`;
+        frameIds.push(requestAnimationFrame(animation));
+      };
+      frameIds.push(requestAnimationFrame(animation));
+    });
+
+    return () => {
+      stopped = true;
+      frameIds.forEach((id) => cancelAnimationFrame(id));
+    };
   }, []);
 
   useEffect(() => {

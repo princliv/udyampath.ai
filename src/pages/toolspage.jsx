@@ -2,35 +2,24 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import headerBg from '../assets/toolpage/headerbgtools.png'; // Import the background image
 import Interview from "../components/toolspage/interview";
+import { pageShellStyle, SectionColumns } from "../components/shared/sectionColumns";
 
 const JobPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div 
-      style={{ 
-        display: "flex", 
-        flexDirection: "column", 
-        gap: "20px", 
-        padding: "20px",  // Set background image
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        minHeight: "100vh" // Ensure it covers the full viewport height
-      }}
-    >
-      {/* Top Section with Two Cards */}
-      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: "20px" }}>
-        {/* Left Rectangle */}
+    <div style={pageShellStyle}>
+      {/* Top Section — same columns and card size as the course page header */}
+      <SectionColumns>
         <div style={{
           background: "#131346",
           color: "white",
           padding: "20px",
           borderRadius: "10px",
-          flex: "1 1 250px",
-          maxWidth: "100%",
-          textAlign: "center"
+          textAlign: "left",
+          minWidth: 0,
         }}>
-          <h2>Chat with your perfect Buddy</h2>
+          <h2 style={{ fontSize: "clamp(1.65rem, 2vw, 2.2rem)", lineHeight: 1.2, margin: 0 }}>Chat with your perfect Buddy</h2>
           <button 
             style={{ 
               marginTop: "10px", 
@@ -41,7 +30,7 @@ const JobPage = () => {
               borderRadius: "5px", 
               cursor: "pointer" 
             }} 
-            onClick={() => navigate("")}
+            onClick={() => navigate("/ai-mentor")}
           >
             Mentora
           </button>
@@ -55,11 +44,10 @@ const JobPage = () => {
           backgroundRepeat: "no-repeat",
           padding: "20px", 
           borderRadius: "10px", 
-          flex: "999 1 320px",
           minWidth: 0
         }}>
           <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "12px" }}>
-            <h2 style={{ fontSize: "clamp(20px, 4vw, 30px)" }}>
+            <h2 style={{ fontSize: "30px", margin: 0 }}>
               Get your dream job with <br /><span style={{ color: "#004aad" }}> Interview Prep</span> and 
               <span style={{ color: "#004aad" }}> projects </span>
             </h2>
@@ -69,21 +57,20 @@ const JobPage = () => {
               style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "5px", width: "100%", maxWidth: "300px" }}
             />
           </div>
+          <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "10px" }}>
           <button style={{ 
-            marginTop: "10px", 
             padding: "10px 15px", 
             background: "#004aad", 
             color: "white", 
             border: "none", 
             borderRadius: "5px", 
-            cursor: "pointer", 
-            width: "100px", 
-            float: "right" 
+            cursor: "pointer"
           }}>
             Search
           </button>
+          </div>
         </div>
-      </div>
+      </SectionColumns>
      <Interview /> 
     </div>
   );

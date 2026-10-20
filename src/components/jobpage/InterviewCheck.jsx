@@ -64,20 +64,18 @@ const InterviewCheck = () => {
 
 const styles = {
   pageContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh',
+    width: '100%',
+    boxSizing: 'border-box',
     padding: '20px',
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#ffffff',
+    borderRadius: '16px',
   },
   container: {
     backgroundColor: '#ffffff',
-    padding: '30px',
-    borderRadius: '8px',
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+    padding: '20px',
+    borderRadius: '10px',
     width: '100%',
-    maxWidth: '600px',
+    boxSizing: 'border-box',
     textAlign: 'center',
   },
   heading: {

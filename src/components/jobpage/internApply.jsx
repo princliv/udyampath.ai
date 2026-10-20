@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { createJobApplication } from "../../firebase/recruiterContent";
 
@@ -15,8 +15,13 @@ const InternApply = () => {
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
 
+  useEffect(() => {
+    if (!job) {
+      navigate("/", { replace: true });
+    }
+  }, [job, navigate]);
+
   if (!job) {
-    navigate("/");
     return null;
   }
 
@@ -56,11 +61,10 @@ const InternApply = () => {
 
   return (
     <div style={{
-      maxWidth: "600px",
-      margin: "40px auto",
-      padding: "30px",
+      width: "100%",
+      boxSizing: "border-box",
+      padding: "20px",
       backgroundColor: "#ffffff",
-      boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
       borderRadius: "16px",
       fontFamily: "Segoe UI, sans-serif"
     }}>

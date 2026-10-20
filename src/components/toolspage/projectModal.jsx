@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import project1 from "../../assets/toolpage/project1.png";
 import project2 from "../../assets/toolpage/project2.png";
@@ -16,8 +16,13 @@ const ProjectModal = () => {
   const navigate = useNavigate();
   const project = location.state;
 
+  useEffect(() => {
+    if (!project) {
+      navigate("/", { replace: true });
+    }
+  }, [project, navigate]);
+
   if (!project) {
-    navigate("/");
     return null;
   }
 
@@ -26,10 +31,11 @@ const ProjectModal = () => {
       style={{
         display: "flex",
         justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #f3f4f6, #ffffff)",
-        padding: "30px",
+        width: "100%",
+        boxSizing: "border-box",
+        background: "#ffffff",
+        borderRadius: "16px",
+        padding: "20px",
       }}
     >
       <div
@@ -38,8 +44,7 @@ const ProjectModal = () => {
           padding: "30px",
           borderRadius: "16px",
           boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.1)",
-          maxWidth: "750px",
-          width: "90%",
+          width: "100%",
           textAlign: "center",
           border: "1px solid #e2e8f0",
         }}
