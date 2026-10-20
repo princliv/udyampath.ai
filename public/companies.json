@@ -1,6 +1,6 @@
 [
-    { "name": "Amazon", "pdf": "/assets/jobpage/amazon.pdf" },
-    { "name": "Google", "pdf": "/assets/jobpage/google.pdf" },
-    { "name": "Microsoft", "pdf": "/assets/jobpage/microsoft.pdf" }
+    { "name": "Amazon", "pdf": "/placement-papers/amazon.pdf" },
+    { "name": "Google", "pdf": "/placement-papers/google.pdf" },
+    { "name": "Microsoft", "pdf": "/placement-papers/microsoft.pdf" }
   ]
   

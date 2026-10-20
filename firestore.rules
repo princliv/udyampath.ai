@@ -1,0 +1,36 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    // Recruiter posts: public read, only that recruiter can write.
+    match /Recruiters/{uid}/{contentType}/{docId} {
+      allow read: if true;
+      allow create: if isOwner(uid)
+        && request.resource.data.recruiterId == uid;
+      allow update, delete: if isOwner(uid)
+        && resource.data.recruiterId == uid
+        && request.resource.data.recruiterId == uid;
+    }
+
+    // Applications: the applicant writes their own; that recruiter can read them.
+    match /Users/{uid}/AppliedJobs/{applicationId} {
+      allow read: if isOwner(uid)
+        || (signedIn() && resource.data.recruiterId == request.auth.uid);
+      allow create: if isOwner(uid)
+        && request.resource.data.applicantId == uid;
+      allow update, delete: if false;
+    }
+
+    // Course test scores stored at users/{uid}/{courseTitle}/testScore
+    match /users/{uid}/{courseTitle}/{scoreId} {
+      allow read, write: if isOwner(uid);
+    }
+  }
+}
