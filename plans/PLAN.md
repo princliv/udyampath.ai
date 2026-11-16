@@ -8,6 +8,8 @@
 > **One plan sheet:** §8 holds every phase of work: the platform build *and* the page-by-page UI redesign that used to live only in `.github/agents/vishwakarma.agent.md` (the "Vishwakarma" design phases V1–V9). See [§8.1](#81-ui-redesign-track-vishwakarma-v1v9) for how they map.
 >
 > Companion doc: [DESIGN_PRINCIPLES.md](DESIGN_PRINCIPLES.md) (visual and interaction system). Where the Vishwakarma agent file and DESIGN_PRINCIPLES.md disagree, **DESIGN_PRINCIPLES.md wins**.
+>
+> **Page layouts** come from the Claude Design file [Aspiro Redesign](https://claude.ai/artifact/9URAR9B4qibZmGfWmedcXJ). That file is the layout source for the screens in [§8.0](#80-artifact-screen-map). DESIGN_PRINCIPLES.md still wins for contrast, tokens, and motion.
 > Source diagrams: `specialfeature1.png` (Hybrid Pathway), `specialfeature2.png` (Job Simulator), `specialfeature3.png` (Job Recommendation), `dfd1.png` (data flow), `merge.png` (how the three connect).
 
 ---
@@ -20,7 +22,7 @@
 5. [Target infrastructure & architecture](#5-target-infrastructure--architecture)
 6. [Data model](#6-data-model)
 7. [Routes / information architecture](#7-routes--information-architecture)
-8. [Execution plan — phases](#8-execution-plan--phases) (includes the [UI redesign track](#81-ui-redesign-track-vishwakarma-v1v9))
+8. [Execution plan — phases](#8-execution-plan--phases) (includes the [artifact screen map](#80-artifact-screen-map) and the [UI redesign track](#81-ui-redesign-track-vishwakarma-v1v9))
 9. [Quality bar: Definition of Done, testing, performance](#9-quality-bar)
 10. [Risks & decisions to confirm](#10-risks--decisions-to-confirm)
 
@@ -569,6 +571,46 @@ Every phase has two kinds of tasks:
 
 A page is redesigned **in the same phase that rebuilds it**, so no screen is styled twice.
 
+### 8.0 Artifact screen map
+
+Captured 16 Nov 2026 from the Claude Design file **Aspiro Redesign** (`https://claude.ai/artifact/9URAR9B4qibZmGfWmedcXJ`). The file is private. It has two canvases, not two screens: **Core pages** and **User flows**.
+
+**Core pages** — light canvas, white cards, dark pill buttons, pastel monogram tiles.
+
+| Artboard | What it shows | Route that implements it |
+|---|---|---|
+| Interview prep | Company papers, interview checklist, technical / HR / group discussion | `/toolspage` → `/placementpapers`, `/interview-checklist`, `/techInterview`, `/hrInterview`, `/groupdiscussion` |
+| Soft skills | Communication (CO), Adaptability (AD), Time management (TM) | `/communication`, `/adaptability`, `/timemanage` |
+| Build your profile | Project ideas (PR), Resume check (RC). AI mentor stays as a third tile so Mentora is not dropped | `/Pdetails`, `/resume-check`, `/ai-mentor` |
+| Flashcards | “Tap the card to see the answer.” Actions: Again, Got it | `/flashcards` |
+| Previous year papers | Table columns: Paper, Section, Year, File | `/pyqs` (table is the default; grid and list stay) |
+
+**User flows** — the three special features, in the order the canvas labels them.
+
+| Flow | Artboard | Route |
+|---|---|---|
+| UF-3 | Job simulator training: “Junior Data Analyst at Nimbus Retail”, tabs Training / Task assigned, task “Clean last quarter’s sales sheet” | `/job-simulator` (workspace on top; the old interview simulator is Quick practice underneath) |
+| UF-3 | Job-Ready badge, public page with the learner’s name | `/verify/badge/:id` (honest empty state until a badge is issued) |
+| UF-1 | “Jobs that pay enough to live where they are.” Order on the canvas: your city → on-site or virtual → same city / other cities → salary vs expense | `/jobpage` |
+| — | Job detail + apply, with a “why this fits” surplus or shortfall | `/jobDetails` |
+| — | “Is moving worth it? Compare two cities,” stacked bars | `/base` |
+| — | Recruiter dashboard, dark shell, gold actions | `/recruiter` (header) |
+
+**Look taken from the artboards**
+
+- Page background is a cool off-white. Cards are white, about 16px radius, with a hairline border.
+- Study tiles use a dark navy pill. The simulator hero is navy, and the active step is a gold pill.
+- A recommended job is green with `+₹`. A job that does not fit is red with `−₹`. The amount is labelled estimated.
+- City compare uses one horizontal stacked bar per city. Category colours stay the ones in DESIGN_PRINCIPLES §2.6.
+- Flashcard actions: outline **Again**, filled teal **Got it**.
+- Header keeps the wordmark and adds Notes and Simulator, which are first-class canvases in the file.
+
+**First implementation pass (16 Nov 2026), on the current Create React App**
+
+Shared styles live in `src/styles/studio.css`. New pieces are `src/components/tools/ToolsHub.jsx`, `src/components/jobs/CityCompare.jsx`, `src/components/simulator/TrackWorkspace.jsx`, `src/pages/BadgeVerify.jsx`, and `src/lib/affordability.js`. Old routes still work. Vite, Tailwind, and `components/ui` from Phase 1 are not replaced by this pass; the studio classes are the bridge until that migration.
+
+Salary math: the job JSON does not store a pay period. `affordability.js` treats ₹1,00,000 or more as annual (divided by 12) and smaller figures as monthly. The chip and the job-detail line say the result is estimated.
+
 ### 8.1 UI redesign track (Vishwakarma V1–V9)
 
 | Design phase | Screens | Done in | Status (11 Oct 2026) |
@@ -576,12 +618,12 @@ A page is redesigned **in the same phase that rebuilds it**, so no screen is sty
 | V1 Foundation | Font, tokens, shared components | Phase 1 | **Mostly built:** Plus Jakarta Sans loaded; section CSS variables, `.glass-card`, shimmer and `.animated-section` in `index.css`; `GlassCard`, `AnimatedSection`, `PageTransition`, `SkeletonCard` in `components/shared/`. Needs reconciling with DESIGN_PRINCIPLES.md. |
 | V2 Homepage | `homepage.jsx`, `components/homepage/` | Phase 1 | **Started:** page uses `PageTransition` / `AnimatedSection` |
 | V3 Courses | `coursepage.jsx`, `components/coursepage/` | Phase 3 (pathway visuals in Phase 4) | **Started:** course rows, Specializations and My Learnings use the shared components |
-| V4 Jobs | `jobpage.jsx`, `components/jobpage/` | Phase 5 | Not started |
-| V5 Tools | `toolspage.jsx`, `components/toolspage/` | Phase 7 | Not started |
-| V6 Notes | `notespage.jsx`, `components/notespage/` | Phase 7 | **Started:** flashcard 3D flip, motion on books |
+| V4 Jobs | `jobpage.jsx`, `components/jobpage/` | Phase 5 | **Started (16 Nov 2026):** jobs hero, affordability chip, city compare, job-detail “why this fits”. See §8.0. |
+| V5 Tools | `toolspage.jsx`, `components/toolspage/` | Phase 7 | **Started:** `/toolspage` is the Core pages hub (interview, soft skills, profile). Inner tool screens are not restyled yet. |
+| V6 Notes | `notespage.jsx`, `components/notespage/` | Phase 7 | **Started:** flashcard Again / Got it, PYQ table default |
 | V7 Profile | `profile.jsx`, `components/profile/` | Phase 2 | Not started |
 | V8 Header, footer, auth | `App.js`, `AuthModal.jsx` | Header + footer in Phase 1, auth in Phase 2 | **Started:** header turns glass on scroll |
-| V9 Recruiter | `recruiter.jsx`, `components/recruiter/` | Phase 8 | Not started |
+| V9 Recruiter | `recruiter.jsx`, `components/recruiter/` | Phase 8 | **Started:** dark header and gold logout. Dashboard body is still the previous layout. |
 
 **What changes from the original agent file** (DESIGN_PRINCIPLES.md wins):
 

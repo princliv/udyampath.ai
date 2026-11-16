@@ -3,7 +3,7 @@ import { FaFilePdf, FaFilter } from "react-icons/fa";
 import { FiDownload, FiEye, FiGrid, FiList, FiSearch, FiX } from "react-icons/fi";
 
 const PyqPage = () => {
-  const [viewMode, setViewMode] = useState("grid");
+  const [viewMode, setViewMode] = useState("table");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedExam, setSelectedExam] = useState("All");
   const [showFilters, setShowFilters] = useState(false);
@@ -281,7 +281,7 @@ const PyqPage = () => {
   return (
     <div style={styles.container}>
       <div style={styles.header}>
-        <h1 style={styles.title}>Previous Year Questions</h1>
+        <h1 style={styles.title}>Previous year papers</h1>
         <p style={styles.subtitle}>Access PYQs for various competitive exams and recruitment tests</p>
         
         <div style={styles.controlsContainer}>
@@ -304,6 +304,17 @@ const PyqPage = () => {
           </div>
           
           <div style={styles.viewModeContainer}>
+            <button
+              type="button"
+              style={{
+                ...styles.viewModeButton,
+                ...(viewMode === "table" ? styles.activeViewMode : {})
+              }}
+              onClick={() => setViewMode("table")}
+              aria-label="Table view"
+            >
+              Table
+            </button>
             <button 
               style={{
                 ...styles.viewModeButton,
@@ -373,6 +384,34 @@ const PyqPage = () => {
                 ? "Try adjusting your search or filters"
                 : "No PYQs available for the selected criteria"}
             </p>
+          </div>
+        ) : viewMode === "table" ? (
+          <div className="studio-table-wrap">
+            <table className="studio-table">
+              <caption>Previous year papers</caption>
+              <thead>
+                <tr>
+                  <th>Paper</th>
+                  <th>Section</th>
+                  <th>Year</th>
+                  <th>File</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredPyqs.map((pyq) => (
+                  <tr key={pyq.id}>
+                    <td>{pyq.exam}</td>
+                    <td>{pyq.category}</td>
+                    <td>{pyq.year}</td>
+                    <td>
+                      <button type="button" className="studio-btn studio-btn--line" onClick={() => openPdfInNewTab(pyq.url)}>
+                        Open
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         ) : viewMode === "grid" ? (
           <div style={styles.gridContainer}>

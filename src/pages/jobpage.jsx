@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Details from "../components/jobpage/details";
-import headerBg from "../assets/jobpage/headerbg.png";
 import applyGif from "../assets/jobpage/apply.gif";
 import { useNavigate } from "react-router-dom";
-import { pageShellStyle, SectionColumns } from "../components/shared/sectionColumns";
 
 const JobPage = () => {
   const navigate = useNavigate();
@@ -21,51 +19,36 @@ const JobPage = () => {
   }, [showModal]);
 
   return (
-    <div style={pageShellStyle}>
-      
-      {/* Top Section — same columns and card size as the course page header */}
-      <SectionColumns>
-        <div style={{ background: "#131346", color: "white", padding: "20px", borderRadius: "10px", textAlign: "left", minWidth: 0 }}>
-          <h2 style={{ fontSize: "clamp(1.65rem, 2vw, 2.2rem)", lineHeight: 1.2, margin: 0 }}>Know the Cost of Living Around You</h2>
-          <button 
-            style={{ marginTop: "10px", padding: "10px 15px", background: "white", color: "#131346", border: "none", borderRadius: "5px", cursor: "pointer" }} 
-            onClick={() => navigate("/base")}
-          >
-            Learn More
-          </button>
-        </div>
-
-        <div style={{ 
-          backgroundImage: `url(${headerBg})`, backgroundSize: "cover", 
-          backgroundPosition: "center", backgroundRepeat: "no-repeat",
-          padding: "20px", borderRadius: "10px", minWidth: 0
-        }}>
-          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "12px" }}>
-            <h2 style={{ fontSize: "30px", margin: 0 }}>
-              Get Recommendations based on the <span style={{ color: "#004aad" }}>Salary</span> with<br /> 
-              respect to <span style={{ color: "#004aad" }}>Expense</span>
-            </h2>
+    <div className="studio-page">
+      <div className="studio-wrap">
+      <header className="studio-hero studio-hero--jobs">
+        <p className="studio-kicker">Your city, then on-site or remote, then salary against expenses</p>
+        <h1>Jobs that pay enough to live where they are</h1>
+        <p className="studio-lead">
+          Enter the city you would live in. Each role is marked recommended or not from its posted pay against that city&apos;s monthly cost.
+        </p>
+        <div className="studio-row">
+          <label className="studio-field">
+            <span>Your city</span>
             <input
               type="text"
-              placeholder="Enter city name (e.g., Bengalore)"
+              placeholder="Pune, Bengaluru, Hyderabad"
               value={city}
               onChange={(e) => setCity(e.target.value)}
-              style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "5px", width: "100%", maxWidth: "300px" }}
             />
-          </div>
-          <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "10px" }}>
-            <button 
-              style={{ padding: "10px 15px", background: "#004aad", color: "white", border: "none", borderRadius: "5px", cursor: "pointer" }}
-              onClick={() => setShowModal(true)}
-            >
-              Apply
-            </button>
-          </div>
+          </label>
+          <button type="button" className="studio-btn studio-btn--dark" onClick={() => navigate("/base")}>
+            Compare cities
+          </button>
+          <button type="button" className="studio-btn studio-btn--line" onClick={() => setShowModal(true)}>
+            How matching works
+          </button>
         </div>
-      </SectionColumns>
+      </header>
 
       {/* Pass City Name to Details Component */}
       <Details city={city} />
+      </div>
 
       {/* Modal */}
       {showModal && (

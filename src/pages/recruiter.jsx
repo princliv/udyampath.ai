@@ -20,7 +20,8 @@ const Recruiter = () => {
     alignItems: "center",
     justifyContent: "space-between", // Ensures spacing between logo and nav buttons
     padding: "10px 20px",
-    background: "#f8f9fa",
+    background: "#0f172a",
+    color: "#fff",
     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
     position: "sticky",
     top: 0,
@@ -40,7 +41,7 @@ const Recruiter = () => {
 
   const linkStyle = {
     textDecoration: "none",
-    color: "#333",
+    color: "#fbbf24",
     fontSize: "16px",
     fontWeight: "bold",
     padding: "8px 12px",
@@ -48,8 +49,8 @@ const Recruiter = () => {
   };
 
   const logoutButtonStyle = {
-    background: "#1d3480",
-    color: "white",
+    background: "#fbbf24",
+    color: "#1e293b",
     padding: "8px 16px",
     border: "none",
     borderRadius: "5px",

@@ -41,6 +41,7 @@ const Profile = lazy(() => import("./pages/profile"));
 const Recruiter = lazy(() => import("./pages/recruiter"));
 const ToolsPage = lazy(() => import("./pages/toolspage"));
 const ComingSoon = lazy(() => import("./pages/ComingSoon"));
+const BadgeVerify = lazy(() => import("./pages/BadgeVerify"));
 const SpecializationPage = lazy(() => import("./components/coursepage/SpecializationPage"));
 const JobSimulator = lazy(() => import("./components/coursepage/JobSimulator"));
 const ResumeCheck = lazy(() => import("./components/jobpage/ResumeCheck"));
@@ -573,6 +574,8 @@ function AppContent() {
               >
                 Tools
               </NavLink>
+              <NavLink to="/notespage" style={navLinkStyle}>Notes</NavLink>
+              <NavLink to="/job-simulator" style={navLinkStyle}>Simulator</NavLink>
 
               {!user ? (
                 <button
@@ -693,6 +696,7 @@ function AppContent() {
         <Route path="/jobDetails" element={<JobDetail />} />
         
         <Route path="/job-simulator" element={<JobSimulator />} />
+        <Route path="/verify/badge/:id" element={<BadgeVerify />} />
         <Route path="/specializations" element={<SpecializationPage />} />
         <Route path="/ai-mentor" element={<ComingSoon title="AI Mentor" />} />
         <Route path="/resume-check" element={<ResumeCheck />} />

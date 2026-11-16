@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { createJobApplication } from "../../firebase/recruiterContent";
 import { pageShellStyle, SectionColumns } from "../shared/sectionColumns";
+import { inr, signedInr } from "../../lib/affordability";
 
 const JobDetail = () => {
   const { state } = useLocation();
   const job = state?.job;
+  const fit = state?.fit;
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -84,6 +86,12 @@ const JobDetail = () => {
       {/* Job Info */}
       <div style={{ minWidth: 0 }}>
         <h2>{job.title}</h2>
+        {fit && (
+          <p className={fit.recommended ? "studio-chip studio-chip--good" : "studio-chip studio-chip--bad"} style={{ margin: "8px 0 12px" }}>
+            Why this fits: {fit.recommended ? "recommended" : "not recommended"} {signedInr(fit.delta)}/mo.
+            Posted pay is treated as {fit.salaryPeriod} ({inr(fit.monthlyPay)}/mo) against {inr(fit.monthlyCost)}/mo in {state.city || "the city you entered"}. Estimated.
+          </p>
+        )}
         <p><strong>Company:</strong> {job.company}</p>
         <p><strong>Location:</strong> {Array.isArray(job.location) ? job.location.join(", ") : (job.location || "Not specified")}</p>
         <p><strong>Experience:</strong> {job.experience}</p>

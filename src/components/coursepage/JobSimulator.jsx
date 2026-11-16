@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import TrackWorkspace from "../simulator/TrackWorkspace";
 
 const JobSimulator = () => {
   const [completedCourses, setCompletedCourses] = useState([]);
@@ -222,17 +223,22 @@ const JobSimulator = () => {
 
   if (!simulationType) {
     return (
+      <div className="studio-page">
+        <div className="studio-wrap">
+        <TrackWorkspace />
+        <h2 className="studio-section-title">Quick practice</h2>
+        <p className="studio-lead">Interview rounds you can try without a certificate. Pick a role and a level.</p>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         style={{
-          minHeight: "100vh",
-          background: "linear-gradient(135deg, #6a11cb 0%, #2575fc 100%)",
+          minHeight: "auto",
+          background: "transparent",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          padding: "20px"
+          padding: "0"
         }}
       >
         <motion.div
@@ -509,6 +515,8 @@ const JobSimulator = () => {
           </motion.div>
         </motion.div>
       </motion.div>
+        </div>
+      </div>
     );
   }
 

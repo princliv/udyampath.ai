@@ -3,12 +3,12 @@ import React, { useMemo, useState, useEffect } from "react";
 import amazonLogo from "../../assets/jobpage/amazon.png";
 import googleLogo from "../../assets/jobpage/google.png";
 import appleLogo from "../../assets/jobpage/apple.png";
-import doneImg from "../../assets/jobpage/done.png";
 import CityDetailsModal from "../jobpage/CityDetailsModal";
 
 import { useNavigate } from "react-router-dom";
 import { CONTENT_TYPES, fetchRecruiterContent } from "../../firebase/recruiterContent";
 import { SectionColumns } from "../shared/sectionColumns";
+import { affordability, inr, signedInr } from "../../lib/affordability";
 
 
 
@@ -130,7 +130,9 @@ const Details = ({ city = "" }) => {
   const [cityLookup, setCityLookup] = useState("idle");
 
   useEffect(() => {
-    const query = String(city || "").trim().toLowerCase();
+    const aliases = { bengaluru: "bengalore", bangalore: "bengalore" };
+    const raw = String(city || "").trim().toLowerCase();
+    const query = aliases[raw] || raw;
     if (!query) {
       setCityInfo(null);
       setCityLookup("idle");
@@ -167,10 +169,14 @@ const Details = ({ city = "" }) => {
 
   const displayJobs = useMemo(
     () =>
-      filteredJobs.map((job) => ({
-        ...job,
-        isAffordable: cityReady && Number(job.salary) > Number(total_expense),
-      })),
+      filteredJobs.map((job) => {
+        const fit = cityReady ? affordability({ salary: job.salary, monthlyCost: total_expense }) : null;
+        return {
+          ...job,
+          fit,
+          isAffordable: Boolean(fit?.recommended),
+        };
+      }),
     [filteredJobs, total_expense, cityReady]
   );
   
@@ -446,7 +452,8 @@ const Details = ({ city = "" }) => {
           {/* Job Details */}
           <div style={{ padding: "15px" }}>
               <h4 style={{ color: "#0073b1", margin: "5px 0", fontWeight: "700" }}>{job.title}</h4>
-              <p style={{ color: "#555", fontSize: "14px", marginBottom: "10px", fontWeight: "500" }}>{job.company}</p>
+              <p style={{ color: "#555", fontSize: "14px", marginBottom: "4px", fontWeight: "500" }}>{job.company}</p>
+              <p style={{ color: "#0f172a", fontSize: "14px", margin: "0 0 10px", fontWeight: 700 }}>{inr(job.salary)} posted</p>
 
               <div style={{ fontSize: "13px", color: "#777", marginBottom: "10px" }}>
                 ⏳ {job.daysLeft} days left
@@ -467,10 +474,11 @@ const Details = ({ city = "" }) => {
                 }}>{job.level}</span>
                 <button
                   onClick={() => {
+                    const nextState = { job, fit: job.fit, city: cityInfo?.city || city };
                     if (selectedTab === "Internship") {
-                      navigate("/intern-apply", { state: { job } });
+                      navigate("/intern-apply", { state: nextState });
                     } else {
-                      navigate("/jobDetails", { state: { job } });;
+                      navigate("/jobDetails", { state: nextState });
                     }
                   }}
                   
@@ -500,28 +508,15 @@ const Details = ({ city = "" }) => {
                 position: "absolute",
                 top: "88px",
                 left: "12px",
-                backgroundColor: job.isAffordable ? "rgba(155, 230, 193, 0.95)" : "rgba(254, 215, 170, 0.95)",
-                padding: "5px 10px",
-                borderRadius: "999px",
-                display: "flex",
-                alignItems: "center",
                 zIndex: 1
               }}>
-                {job.isAffordable && (
-                  <img src={doneImg} alt="" style={{ width: "16px", marginRight: "5px" }} />
-                )}
                 <button
+                  type="button"
+                  className={job.isAffordable ? "studio-chip studio-chip--good" : "studio-chip studio-chip--bad"}
                   onClick={() => setIsCityModalOpen(true)}
-                  style={{
-                    backgroundColor: "transparent",
-                    border: "none",
-                    fontWeight: 600,
-                    fontSize: "12px",
-                    color: "#1e293b",
-                    cursor: "pointer"
-                  }}
+                  title={job.fit ? `Estimated. Posted pay treated as ${job.fit.salaryPeriod}, compared with ${inr(job.fit.monthlyCost)}/mo in this city.` : "City cost"}
                 >
-                  {job.isAffordable ? "Affordable" : "Above budget"}
+                  {job.isAffordable ? "Recommended" : "Not recommended"} {job.fit ? signedInr(job.fit.delta) : ""}
                 </button>
               </div>
             )}

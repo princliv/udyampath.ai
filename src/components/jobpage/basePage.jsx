@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import confusedGif from "../../assets/jobpage/confused.gif"; // Animated icon
 import headerBg from "../../assets/jobpage/headerbg.png"; // Background image for search section
 import BaseDetails from "../jobpage/baseDetails";
-import { pageShellStyle, SectionColumns } from "../shared/sectionColumns";
+import { SectionColumns } from "../shared/sectionColumns";
+import CityCompare from "../jobs/CityCompare";
 
 // Import all city images
 import BengaloreImg from "../../assets/jobpage/Banglore.png";
@@ -51,7 +52,9 @@ const BasePage = () => {
   };
 
   return (
-    <div style={pageShellStyle}>
+    <div className="studio-page">
+      <div className="studio-wrap">
+      <CityCompare />
       <SectionColumns>
       <div style={{ padding: "20px", borderRadius: "10px", background: "#e0f2fe", minWidth: 0, textAlign: "left" }}>
         <h2 style={{ color: "#004369", fontSize: "clamp(1.65rem, 2vw, 2.2rem)", lineHeight: 1.2, margin: 0 }}>
@@ -134,6 +137,7 @@ const BasePage = () => {
       )}
 
     <BaseDetails cityData={selectedCity} />
+      </div>
     </div>
   );
 };

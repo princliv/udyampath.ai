@@ -372,7 +372,7 @@ const FlashCard = () => {
                       {currentCard.question}
                     </h3>
                     <p style={styles.cardHint}>
-                      Click to reveal answer
+                      Tap the card to see the answer.
                     </p>
                   </div>
 
@@ -440,25 +440,33 @@ const FlashCard = () => {
       {/* Action Buttons */}
       <div style={styles.actionButtonsContainer}>
         <button
+          type="button"
+          onClick={handleNext}
+          disabled={!currentCard}
+          className="studio-btn studio-btn--line"
+        >
+          Again
+        </button>
+        <button
+          type="button"
           onClick={handleFlip}
           disabled={!currentCard}
-          style={styles.flipButton}
+          className="studio-btn studio-btn--line"
         >
           <FaRedo style={styles.actionIcon} />
-          {isFlipped ? 'Show Question' : 'Show Answer'}
+          {isFlipped ? 'Show question' : 'Show answer'}
         </button>
-        
         <button
+          type="button"
           onClick={markAsMastered}
           disabled={!currentCard || isMastered}
+          className="studio-btn studio-btn--teal"
           style={{
-            ...styles.masterButton,
             opacity: isMastered ? 0.7 : 1,
             cursor: isMastered ? 'not-allowed' : 'pointer'
           }}
         >
-          <IoMdFlash style={styles.actionIcon} />
-          {isMastered ? 'Already Mastered' : 'I Know This!'}
+          Got it
         </button>
       </div>
     </div>
