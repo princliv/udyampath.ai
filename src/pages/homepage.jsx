@@ -12,7 +12,6 @@ import Event from "../components/homepage/event";
 import { useMediaQuery } from "react-responsive";
 import FaqPage from "../components/homepage/FaqPage";
 import Works from "../components/homepage/howitworks";
-import PageTransition from "../components/shared/PageTransition";
 import AnimatedSection from "../components/shared/AnimatedSection";
 import GlassCard from "../components/shared/GlassCard";
 
@@ -21,7 +20,6 @@ const Homepage = () => {
   const isMobile = useMediaQuery({ maxWidth: 768 });
 
   return (
-    <PageTransition>
       <div style={styles.container}>
         {/* Hero Section with Gradient Background */}
         <div style={{ ...styles.heroSection, ...(isMobile ? styles.heroSectionMobile : {}) }}>
@@ -33,8 +31,13 @@ const Homepage = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
-                <h1 style={styles.heroHeading}>
-                  Your Complete<br />Career Companion
+                <h1 style={{ ...styles.heroHeading, ...(isMobile ? { fontSize: "32px" } : {}) }}>
+                  <motion.span style={styles.heroLine} initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.2, delay: 0 }}>
+                    Your Complete
+                  </motion.span>
+                  <motion.span style={styles.heroLine} initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.2, delay: 0.1 }}>
+                    Career Companion
+                  </motion.span>
                 </h1>
               </motion.div>
 
@@ -53,7 +56,13 @@ const Homepage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.6 }}
               >
-                <button style={styles.seeMoreBtn}>See More</button>
+                <button
+                  type="button"
+                  style={styles.seeMoreBtn}
+                  onClick={() => document.getElementById("whats-new")?.scrollIntoView({ behavior: "smooth" })}
+                >
+                  See More
+                </button>
                 <button 
                   style={styles.exploreBtn} 
                   onClick={() => navigate("/recruiter")}
@@ -183,7 +192,6 @@ const Homepage = () => {
           <FaqPage />
         </AnimatedSection>
       </div>
-    </PageTransition>
   );
 };
 
@@ -194,11 +202,11 @@ const styles = {
     // Stretch so every section is exactly page-width; centring is done inside each section.
     alignItems: "stretch",
     width: "100%",
-    backgroundColor: "#ffffff",
+    backgroundColor: "var(--bg)",
   },
   heroSection: {
     width: "100%",
-    background: "var(--home-gradient)",
+    background: "linear-gradient(135deg, var(--brand-500), var(--brand-deep))",
     padding: "60px 40px",
     minHeight: "500px",
     display: "flex",
@@ -231,12 +239,15 @@ const styles = {
     paddingRight: "0",
   },
   heroHeading: {
-    fontSize: "var(--fs-display)",
-    fontWeight: 600,
+    fontSize: "48px",
+    fontWeight: 800,
     lineHeight: 1.15,
     letterSpacing: "-0.025em",
     marginBottom: "20px",
     color: "#ffffff",
+  },
+  heroLine: {
+    display: "block",
   },
   description: {
     fontSize: "var(--fs-body-lg)",
@@ -266,15 +277,17 @@ const styles = {
     color: "white",
     cursor: "pointer",
     borderRadius: "var(--radius-md)",
+    minHeight: "44px",
     transition: "all var(--transition-base)",
   },
   exploreBtn: {
     padding: "12px 28px",
     fontSize: "16px",
     fontWeight: "600",
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    backgroundColor: "var(--brand-600)",
     color: "white",
     border: "none",
+    minHeight: "44px",
     cursor: "pointer",
     borderRadius: "var(--radius-md)",
     transition: "all var(--transition-base)",

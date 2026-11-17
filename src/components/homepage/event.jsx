@@ -99,7 +99,8 @@ const Event = () => {
 
   return (
     <div className="event-container">
-      <button onClick={prevSlide} className="arrow left-arrow">
+      <h2 style={{ fontSize: "var(--fs-h2)", fontWeight: 800, color: "var(--n-900)", margin: "0 0 24px" }}>Events</h2>
+      <button type="button" onClick={prevSlide} className="arrow left-arrow" aria-label="Previous events">
         <FaArrowLeft size={20} />
       </button>
 
@@ -134,7 +135,7 @@ const Event = () => {
         </div>
       </div>
 
-      <button onClick={nextSlide} className="arrow right-arrow">
+      <button type="button" onClick={nextSlide} className="arrow right-arrow" aria-label="Next events">
         <FaArrowRight size={20} />
       </button>
 
@@ -154,7 +155,7 @@ const Event = () => {
           display: flex;
           flex-direction: column;
           align-items: center;
-          background: #f0f4ff;
+          background: var(--n-0);
           padding: 40px;
           width: 100%;
           max-width: 100%;
@@ -176,9 +177,10 @@ const Event = () => {
           padding: 10px;
           margin: 0 10px;
           box-sizing: border-box;
-          background-color: white;
-          border-radius: 8px;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          background: var(--n-0);
+          border: 1px solid var(--n-200);
+          border-radius: var(--radius-lg);
+          box-shadow: var(--shadow-xs);
         }
 
         .event-image {

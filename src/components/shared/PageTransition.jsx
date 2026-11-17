@@ -1,34 +1,16 @@
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from "framer-motion";
 
-/**
- * PageTransition — Wraps entire pages with entrance/exit animations
- * Provides smooth fade + slide transitions between routes
- *
- * Props:
- *   - children: React node(s) — the page content to animate
- *   - duration: Number (default: 0.4) — animation duration in seconds
- *   - direction: 'up' | 'down' (default: 'up') — slide direction
- *   - className: Optional additional className
- */
-
-const PageTransition = ({
-  children,
-  duration = 0.4,
-  direction = 'up',
-  className = '',
-}) => {
-  const slideDistance = direction === 'up' ? 24 : -24;
+const PageTransition = ({ children, className = "" }) => {
+  const reduce = useReducedMotion();
+  const distance = reduce ? 0 : 8;
 
   return (
     <motion.div
       className={`page-transition ${className}`}
-      initial={{ opacity: 0, y: slideDistance }}
+      initial={{ opacity: 0, y: distance }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -slideDistance }}
-      transition={{
-        duration,
-        ease: 'easeOut',
-      }}
+      exit={{ opacity: 0, y: reduce ? 0 : -distance }}
+      transition={{ duration: reduce ? 0.01 : 0.2, ease: [0.2, 0, 0, 1] }}
     >
       {children}
     </motion.div>

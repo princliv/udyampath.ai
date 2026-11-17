@@ -1,48 +1,25 @@
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
-
-/**
- * SkeletonCard — Reusable skeleton loading wrapper
- * Shows placeholder skeleton while data loads, with section-tinted colors
- *
- * Props:
- *   - width: String | Number (default: '100%') — skeleton width
- *   - height: String | Number (default: 200) — skeleton height
- *   - count: Number (default: 1) — number of skeleton lines to show
- *   - borderRadius: String | Number (default: 'var(--radius-lg)') — corner radius
- *   - baseColor: String (default: '#f3f3f3') — base skeleton color
- *   - highlightColor: String (default: '#e0e0e0') — highlight/shimmer color
- *   - className: Optional additional className
- */
+import { useEffect, useState } from "react";
 
 const SkeletonCard = ({
-  width = '100%',
+  width = "100%",
   height = 200,
-  count = 1,
-  borderRadius = 16,
-  baseColor = '#f3f3f3',
-  highlightColor = '#e0e0e0',
-  className = '',
+  className = "",
 }) => {
-  const containerStyle = {
-    width,
-    borderRadius: typeof borderRadius === 'number' ? `${borderRadius}px` : borderRadius,
-    overflow: 'hidden',
-  };
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setVisible(true), 150);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!visible) return null;
 
   return (
-    <div className={`skeleton-card ${className}`} style={containerStyle}>
-      <Skeleton
-        height={height}
-        count={count}
-        baseColor={baseColor}
-        highlightColor={highlightColor}
-        borderRadius={borderRadius}
-        style={{
-          marginBottom: '8px',
-        }}
-      />
-    </div>
+    <div
+      className={`skeleton-card ${className}`}
+      style={{ width, height, borderRadius: "var(--radius-lg)" }}
+      aria-hidden="true"
+    />
   );
 };
 

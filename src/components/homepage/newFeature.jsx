@@ -1,118 +1,134 @@
-import React from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion"; // Import Framer Motion
+import { motion, useReducedMotion } from "framer-motion";
 import homeSection2 from "../../assets/homeSection2.jpeg";
 import homeSection3 from "../../assets/notes.png";
 import homeSection4 from "../../assets/course.jpg";
-
-const NewFeature = () => {
-  return (
-    <motion.div 
-      initial={{ opacity: 0, y: 50 }} 
-      animate={{ opacity: 1, y: 0 }} 
-      transition={{ duration: 0.8 }}
-      style={styles.container}
-    >
-      <h2 style={styles.heading}>What's New for You</h2>
-
-      <div style={styles.cardContainer}>
-        {cardData.map((item, index) => (
-          <motion.div
-            key={index}
-            whileHover={{ scale: 1.05 }} 
-            transition={{ type: "spring", stiffness: 300 }}
-            style={styles.card}
-          >
-            <img src={item.image} alt={item.title} style={styles.image} />
-            <div style={styles.textContainer}>
-              <h3 style={styles.cardHeading}>{item.title}</h3>
-              <p style={styles.subHeading}>{item.description}</p>
-              <motion.div 
-                whileHover={{ x: 5 }} 
-                transition={{ type: "spring", stiffness: 200 }}
-              >
-                <Link to={item.link} style={styles.learnMore}>Learn More →</Link>
-              </motion.div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-    </motion.div>
-  );
-};
 
 const cardData = [
   {
     image: homeSection3,
     title: "Notes Hard to Read? Discover Visual Diagrams!",
     description: "Transform your lengthy notes into easy-to-understand diagrams in seconds.",
-    link: "/notes"
+    link: "/notes",
   },
   {
     image: homeSection2,
     title: "Know the Cost of Living Around You",
     description: "Get real-time reports tailored to your location and make informed decisions.",
-    link: "/base"
+    link: "/base",
   },
   {
     image: homeSection4,
-    title: "Skip What You Know, Learn What You Don’t",
+    title: "Skip What You Know, Learn What You Don't",
     description: "Start a course customized to your knowledge level—no repetition, just growth.",
-    link: "/coursepage"
-  }
+    link: "/coursepage",
+  },
 ];
+
+const NewFeature = () => {
+  const reduce = useReducedMotion();
+
+  return (
+    <section id="whats-new" style={styles.container}>
+      <h2 style={styles.heading}>What's New for You</h2>
+      <motion.div
+        style={styles.cardContainer}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={{
+          hidden: {},
+          visible: { transition: { staggerChildren: reduce ? 0 : 0.04 } },
+        }}
+      >
+        {cardData.map((item) => (
+          <motion.article
+            key={item.link}
+            className="home-feature-card"
+            style={styles.card}
+            variants={{
+              hidden: { opacity: 0, y: reduce ? 0 : 12 },
+              visible: { opacity: 1, y: 0 },
+            }}
+          >
+            <Link to={item.link} style={styles.link}>
+              <img src={item.image} alt="" style={styles.image} />
+              <div style={styles.textContainer}>
+                <h3 style={styles.cardHeading}>{item.title}</h3>
+                <p style={styles.subHeading}>{item.description}</p>
+                <span style={styles.learnMore}>Learn more</span>
+              </div>
+            </Link>
+          </motion.article>
+        ))}
+      </motion.div>
+    </section>
+  );
+};
 
 const styles = {
   container: {
-    display: "flex",
-    flexDirection: "column",
-    textAlign: "center",
-    padding: "40px 16px",
-    maxWidth: "100%",
+    padding: "64px 24px",
+    background: "var(--bg)",
   },
   heading: {
     fontSize: "var(--fs-h2)",
-    fontWeight: 700,
-    marginBottom: "20px",
+    fontWeight: 800,
+    textAlign: "center",
+    margin: "0 0 32px",
+    color: "var(--n-900)",
   },
   cardContainer: {
-    display: "flex",
-    justifyContent: "center",
-    flexWrap: "wrap",
-    gap: "20px",
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+    gap: "24px",
+    maxWidth: "1100px",
+    margin: "0 auto",
   },
   card: {
-    width: "100%",
-    maxWidth: "300px",
-    backgroundColor: "#f5f5f5",
-    borderRadius: "10px",
+    background: "var(--n-0)",
+    border: "1px solid var(--n-200)",
+    borderRadius: "var(--radius-lg)",
+    boxShadow: "var(--shadow-xs)",
     overflow: "hidden",
-    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
-    cursor: "pointer",
+  },
+  link: {
+    color: "inherit",
+    textDecoration: "none",
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
   },
   image: {
     width: "100%",
-    height: "150px",
+    height: "180px",
     objectFit: "cover",
+    borderRadius: "var(--radius-lg) var(--radius-lg) 0 0",
+    transition: "transform 200ms ease",
   },
   textContainer: {
-    padding: "15px",
+    padding: "20px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "8px",
+    textAlign: "left",
   },
   cardHeading: {
+    margin: 0,
     fontSize: "18px",
     fontWeight: 700,
-    marginBottom: "10px",
+    color: "var(--n-900)",
   },
   subHeading: {
+    margin: 0,
     fontSize: "14px",
-    fontWeight: 400,
-    marginBottom: "10px",
+    lineHeight: 1.5,
+    color: "var(--n-600)",
   },
   learnMore: {
-    fontSize: "14px",
-    fontWeight: 600,
-    color: "#007bff",
-    textDecoration: "none",
+    marginTop: "8px",
+    fontWeight: 700,
+    color: "var(--brand-600)",
   },
 };
 

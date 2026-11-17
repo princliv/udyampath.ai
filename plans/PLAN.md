@@ -615,14 +615,14 @@ Salary math: the job JSON does not store a pay period. `affordability.js` treats
 
 | Design phase | Screens | Done in | Status (11 Oct 2026) |
 |---|---|---|---|
-| V1 Foundation | Font, tokens, shared components | Phase 1 | **Mostly built:** Plus Jakarta Sans loaded; section CSS variables, `.glass-card`, shimmer and `.animated-section` in `index.css`; `GlassCard`, `AnimatedSection`, `PageTransition`, `SkeletonCard` in `components/shared/`. Needs reconciling with DESIGN_PRINCIPLES.md. |
-| V2 Homepage | `homepage.jsx`, `components/homepage/` | Phase 1 | **Started:** page uses `PageTransition` / `AnimatedSection` |
+| V1 Foundation | Font, tokens, shared components | Phase 1 | **Done (17 Nov 2026):** tokens, `.glass` fallbacks, 8px/200ms `PageTransition`, staggered `AnimatedSection`, `SkeletonCard` delay. |
+| V2 Homepage | `homepage.jsx`, `components/homepage/` | Phase 1 | **Done (17 Nov 2026):** hero, feature cards, What's New, how-it-works, events, FAQ. |
 | V3 Courses | `coursepage.jsx`, `components/coursepage/` | Phase 3 (pathway visuals in Phase 4) | **Started:** course rows, Specializations and My Learnings use the shared components |
 | V4 Jobs | `jobpage.jsx`, `components/jobpage/` | Phase 5 | **Started (16 Nov 2026):** jobs hero, affordability chip, city compare, job-detail “why this fits”. See §8.0. |
 | V5 Tools | `toolspage.jsx`, `components/toolspage/` | Phase 7 | **Started:** `/toolspage` is the Core pages hub (interview, soft skills, profile). Inner tool screens are not restyled yet. |
 | V6 Notes | `notespage.jsx`, `components/notespage/` | Phase 7 | **Started:** flashcard Again / Got it, PYQ table default |
 | V7 Profile | `profile.jsx`, `components/profile/` | Phase 2 | Not started |
-| V8 Header, footer, auth | `App.js`, `AuthModal.jsx` | Header + footer in Phase 1, auth in Phase 2 | **Started:** header turns glass on scroll |
+| V8 Header, footer, auth | `App.jsx`, `AuthModal.jsx` | Header + footer in Phase 1, auth in Phase 2 | **Header and footer done (17 Nov 2026).** Auth modal restyle stays in Phase 2. |
 | V9 Recruiter | `recruiter.jsx`, `components/recruiter/` | Phase 8 | **Started:** dark header and gold logout. Dashboard body is still the previous layout. |
 
 **What changes from the original agent file** (DESIGN_PRINCIPLES.md wins):
@@ -676,11 +676,11 @@ Salary math: the job JSON does not store a pay period. `affordability.js` treats
 - [x] Migrate CRA → **Vite**. Env config moves to `VITE_*` with separate **dev and prod Firebase projects**. Firebase Emulator Suite runs locally. *(17 Nov 2026: Vite build is green. Local env files use `VITE_FIREBASE_*`. `.env.production` is gitignored and, until a second Firebase project exists, holds a copy of the current project so `vite build` can run. Emulators are configured in `firebase.json` and the client connects only when `VITE_USE_EMULATORS=true`. `firebase-tools` is installed with install scripts skipped so the optional `re2` native module is not compiled.)*
 - [x] Add TypeScript (`allowJs`), ESLint (flat config) + Prettier, path aliases (`@/`), Husky + lint-staged. *(`tsc --noEmit` passes with `checkJs` off. ESLint 9 flat config. Lint-staged covers `src/components/ui`, `src/lib`, and `src/styles`. Husky pre-commit runs lint-staged. CI sets `HUSKY=0`.)*
 - [x] **GitHub Actions:** lint → typecheck → unit → build → preview deploy (Firebase Hosting channel) on each PR. *(Workflow is `.github/workflows/ci.yml`. Preview deploy exits 0 when `FIREBASE_SERVICE_ACCOUNT` or `FIREBASE_PROJECT_ID` is unset. Not run on GitHub yet.)*
-- [x] Remove dead files and unused dependencies (§4.9). Standardize on `react-router-dom` only. *(Removed the unused sample/login/signup files, `App.css`, `public/index.html`, `react-scripts`, direct `react-router`, TensorFlow, react-flow v1, react-mindmap, the PDF viewer packages, d3-timer, react-transition-group, fortawesome, and cra-template. Kept `reactflow`, `@fortawesome/fontawesome-free`, `face-api.js`, and `pdf-lib`. `newFeature_updated.jsx` stays until the homepage merge.)*
+- [x] Remove dead files and unused dependencies (§4.9). Standardize on `react-router-dom` only. *(Removed the unused sample/login/signup files, `App.css`, `public/index.html`, `react-scripts`, direct `react-router`, TensorFlow, react-flow v1, react-mindmap, the PDF viewer packages, d3-timer, react-transition-group, fortawesome, and cra-template. Kept `reactflow`, `@fortawesome/fontawesome-free`, `face-api.js`, and `pdf-lib`. `newFeature_updated.jsx` was merged into `newFeature.jsx` and deleted with the homepage restyle.)*
 - [x] Implement **design tokens + Tailwind v4 + `components/ui`** per DESIGN_PRINCIPLES.md: Button, Card, Chip, Dialog, Tabs, Progress, Skeleton, Toast, EmptyState, Money, Stepper. *(Tokens live in `src/styles/tokens.css` and are mapped with Tailwind v4 `@theme`. Existing pages still use their own CSS. ToastProvider wraps the app.)*
-- [ ] Rebuild the **AppShell**: Header, MobileDock and Footer (out of the 822-line `App.js`), route-level code splitting, PageTransition and a 404 page.
-- [ ] Restyle the homepage on the new system, with all sections kept (§4.2).
-- [ ] Update `.github/agents/vishwakarma.agent.md` to follow DESIGN_PRINCIPLES.md and §8.1. It currently says "glass on ALL cards", which conflicts with the new rules.
+- [x] Rebuild the **AppShell**: Header, MobileDock and Footer (out of the 822-line `App.js`), route-level code splitting, PageTransition and a 404 page. *(17 Nov 2026: `components/layout/Header.jsx`, `Footer.jsx`, `MobileDock.jsx`. Routes stay lazy. Unknown URLs render `pages/NotFound.jsx`. `PageTransition` wraps the outlet.)*
+- [x] Restyle the homepage on the new system, with all sections kept (§4.2). *(Hero, What's New, popular strip, how-it-works, events, and FAQ. `newFeature_updated.jsx` is merged and deleted. See More scrolls to `#whats-new`.)*
+- [x] Update `.github/agents/vishwakarma.agent.md` to follow DESIGN_PRINCIPLES.md and §8.1. It currently says "glass on ALL cards", which conflicts with the new rules. *(The agent file now points at DESIGN_PRINCIPLES and §8.1. Glass is limited to the scrolled header, the three hero cards, modal backdrops, and celebration overlays.)*
 
 🎨 **UI design — V1 Foundation** (already partly built; this finishes and reconciles it):
 - [x] Load Plus Jakarta Sans (400–800) in `index.html`.
@@ -688,27 +688,27 @@ Salary math: the job JSON does not store a pay period. `affordability.js` treats
 - [x] Create `components/shared/`: `GlassCard`, `AnimatedSection`, `SkeletonCard`, `PageTransition`.
 - [x] Move the `:root` variables from `src/index.css` into `src/styles/tokens.css` per DESIGN_PRINCIPLES §2 and §11. Replace `--home-primary`, `--course-primary`, … with `--accent-500` / `--accent-700` driven by `data-section`. Keep the old names as aliases until every page is ported, then delete them.
 - [x] Add the hero-band gradients per section (§2.4) as `--accent-gradient`.
-- [ ] Update `.glass-card` to the §4.1 `.glass` rule, including the `@supports` and reduced-transparency fallbacks.
-- [ ] `PageTransition`: 8px rise, 200ms. `AnimatedSection`: honour `prefers-reduced-motion`, max 6 staggered items at 40ms.
-- [ ] `SkeletonCard` → `components/ui/Skeleton`: base `--n-100`, highlight tinted from `--accent-500`; shimmer off under reduced motion; shown only after 150ms.
+- [x] Update `.glass-card` to the §4.1 `.glass` rule, including the `@supports` and reduced-transparency fallbacks.
+- [x] `PageTransition`: 8px rise, 200ms. `AnimatedSection`: honour `prefers-reduced-motion`, max 6 staggered items at 40ms.
+- [x] `SkeletonCard` → `components/ui/Skeleton`: base `--n-100`, highlight tinted from `--accent-500`; shimmer off under reduced motion; shown only after 150ms. *( `SkeletonCard` now uses that treatment. `components/ui/Skeleton` is the primitive.)*
 - [x] Add JetBrains Mono for code. *(Loaded from `index.html` next to Plus Jakarta Sans.)*
 
 🎨 **UI design — V8 Header & footer:**
 - [x] Header is transparent at the top and turns glass after 20px of scroll (`backdrop-filter: blur(20px)`, soft shadow, 0.3s transition).
-- [ ] Move the header out of `App.js` into `components/layout/Header`, keeping the scroll behaviour. Nav links get a hover underline in CSS (no JS hover handlers). The login button is a glass pill when scrolled and outlined when transparent.
-- [ ] Footer keeps its brand background, now `--brand-deep`. 4-column grid on desktop that stacks on mobile, `1px` top border at `rgb(255 255 255 / .15)`, column headings weight 700, links fade on hover.
-- [ ] Mobile dock: visible labels, `aria-label`s, 44px tap targets.
+- [x] Move the header out of `App.js` into `components/layout/Header`, keeping the scroll behaviour. Nav links get a hover underline in CSS (no JS hover handlers). The login button is a glass pill when scrolled and outlined when transparent.
+- [x] Footer keeps its brand background, now `--brand-deep`. 4-column grid on desktop that stacks on mobile, `1px` top border at `rgb(255 255 255 / .15)`, column headings weight 700, links fade on hover.
+- [x] Mobile dock: visible labels, `aria-label`s, 44px tap targets.
 
 🎨 **UI design — V2 Homepage** (`homepage.jsx`, `components/homepage/`):
-- [ ] Wrap the page in `PageTransition`. Hero uses the home gradient (`brand-500 → brand-deep`), two columns on desktop and stacked on mobile.
+- [x] Wrap the page in `PageTransition`. Hero uses the home gradient (`brand-500 → brand-deep`), two columns on desktop and stacked on mobile. *(The shell wraps every route, including the homepage.)*
   - Left: display heading (48px, weight 800, white) with lines entering one by one (`x: -30 → 0`, 0.1s apart), description, CTA buttons.
   - Right: the 3 **glass** cards (Jobs, Courses, Tools) with coloured icons. This is one of the few places glass is allowed; hover lift is allowed here.
-- [ ] Sections below the hero sit on a light background, each wrapped in `AnimatedSection`.
-- [ ] `newFeature.jsx`: neutral cards with a soft shadow, staggered reveal (`staggerChildren` capped per §5), image scales slightly on hover, rounded images. Merge in `newFeature_updated.jsx`, then delete it.
-- [ ] `popular.jsx`: reveal the carousel container on scroll; course cards get a coloured top accent strip per category.
-- [ ] `howitworks.jsx`: odd steps enter from the left and even steps from the right; step numbers are large accent circles that scale in. Content shows the 3-feature journey (§1).
-- [ ] `event.jsx`: section reveal; neutral event cards.
-- [ ] `FaqPage.jsx`: animated accordion (height expands, chevron rotates), keyboard accessible.
+- [x] Sections below the hero sit on a light background, each wrapped in `AnimatedSection`.
+- [x] `newFeature.jsx`: neutral cards with a soft shadow, staggered reveal (`staggerChildren` capped per §5), image scales slightly on hover, rounded images. Merge in `newFeature_updated.jsx`, then delete it.
+- [x] `popular.jsx`: reveal the carousel container on scroll; course cards get a coloured top accent strip per category.
+- [x] `howitworks.jsx`: odd steps enter from the left and even steps from the right; step numbers are large accent circles that scale in. Content shows the 3-feature journey (§1).
+- [x] `event.jsx`: section reveal; neutral event cards.
+- [x] `FaqPage.jsx`: animated accordion (height expands, chevron rotates), keyboard accessible.
 
 **Exit:**
 - `npm run dev` (Vite) and emulators work.

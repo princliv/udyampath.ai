@@ -6,7 +6,6 @@ import SpecializationContent from "../components/coursepage/SpecializationPage";
 import MyLearningsContent from "../components/coursepage/MyLearningsPage";
 import headerBg from '../assets/coursepage/headerbg.png';
 import CodeEditor from '../components/coursepage/CodeEditor';
-import PageTransition from "../components/shared/PageTransition";
 import AnimatedSection from "../components/shared/AnimatedSection";
 import { pageShellStyle, SectionColumns, useWideLayout } from "../components/shared/sectionColumns";
 
@@ -231,7 +230,6 @@ const CoursePage = () => {
   };
 
   return (
-    <PageTransition>
       <div style={pageShellStyle}>
       {/* Code Editor Overlay */}
       {showCodeEditor && currentChallenge && (
@@ -1515,7 +1513,6 @@ const CoursePage = () => {
         </div>
       </SectionColumns>
       </div>
-    </PageTransition>
   );
 };
 
