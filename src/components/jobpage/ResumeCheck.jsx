@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import mammoth from "mammoth";
 import * as pdfjsLib from "pdfjs-dist";
-import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
+import pdfjsWorker from "pdfjs-dist/build/pdf.worker.min.js?url";
 import { FaFileUpload, FaCheckCircle, FaTimesCircle, FaRobot, FaClipboardList, FaChartPie, FaArrowRight, FaLightbulb, FaSearch } from "react-icons/fa";
 import { FiRefreshCw } from "react-icons/fi";
 import { SectionColumns } from "../shared/sectionColumns";

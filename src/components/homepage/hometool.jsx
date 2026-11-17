@@ -5,6 +5,7 @@ import icon2 from "../../assets/icon2.png";
 import icon3 from "../../assets/icon3.png";
 import icon4 from "../../assets/icon4.png";
 import background from "../../assets/bghometool.png";
+import homeToolImage from "../../assets/HomeTool.png";
 
 const HomeTool = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -153,7 +154,7 @@ const HomeTool = () => {
           }}
         >
           <img
-            src={require("../../assets/HomeTool.png")}
+            src={homeToolImage}
             alt="Home Tool"
             style={{ maxWidth: "100%", maxHeight: "90vh", borderRadius: "12px" }}
           />

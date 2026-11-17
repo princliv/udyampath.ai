@@ -673,25 +673,25 @@ Salary math: the job JSON does not store a pay period. `affordability.js` treats
 - The rules are deployed.
 
 ### Phase 1 — Foundation: tooling, design system, app shell *(M)*
-- [ ] Migrate CRA → **Vite**. Env config moves to `VITE_*` with separate **dev and prod Firebase projects**. Firebase Emulator Suite runs locally.
-- [ ] Add TypeScript (`allowJs`), ESLint (flat config) + Prettier, path aliases (`@/`), Husky + lint-staged.
-- [ ] **GitHub Actions:** lint → typecheck → unit → build → preview deploy (Firebase Hosting channel) on each PR.
-- [ ] Remove dead files and unused dependencies (§4.9). Standardize on `react-router-dom` only.
-- [ ] Implement **design tokens + Tailwind v4 + `components/ui`** per DESIGN_PRINCIPLES.md: Button, Card, Chip, Dialog, Tabs, Progress, Skeleton, Toast, EmptyState, Money, Stepper.
+- [x] Migrate CRA → **Vite**. Env config moves to `VITE_*` with separate **dev and prod Firebase projects**. Firebase Emulator Suite runs locally. *(17 Nov 2026: Vite build is green. Local env files use `VITE_FIREBASE_*`. `.env.production` is gitignored and, until a second Firebase project exists, holds a copy of the current project so `vite build` can run. Emulators are configured in `firebase.json` and the client connects only when `VITE_USE_EMULATORS=true`. `firebase-tools` is installed with install scripts skipped so the optional `re2` native module is not compiled.)*
+- [x] Add TypeScript (`allowJs`), ESLint (flat config) + Prettier, path aliases (`@/`), Husky + lint-staged. *(`tsc --noEmit` passes with `checkJs` off. ESLint 9 flat config. Lint-staged covers `src/components/ui`, `src/lib`, and `src/styles`. Husky pre-commit runs lint-staged. CI sets `HUSKY=0`.)*
+- [x] **GitHub Actions:** lint → typecheck → unit → build → preview deploy (Firebase Hosting channel) on each PR. *(Workflow is `.github/workflows/ci.yml`. Preview deploy exits 0 when `FIREBASE_SERVICE_ACCOUNT` or `FIREBASE_PROJECT_ID` is unset. Not run on GitHub yet.)*
+- [x] Remove dead files and unused dependencies (§4.9). Standardize on `react-router-dom` only. *(Removed the unused sample/login/signup files, `App.css`, `public/index.html`, `react-scripts`, direct `react-router`, TensorFlow, react-flow v1, react-mindmap, the PDF viewer packages, d3-timer, react-transition-group, fortawesome, and cra-template. Kept `reactflow`, `@fortawesome/fontawesome-free`, `face-api.js`, and `pdf-lib`. `newFeature_updated.jsx` stays until the homepage merge.)*
+- [x] Implement **design tokens + Tailwind v4 + `components/ui`** per DESIGN_PRINCIPLES.md: Button, Card, Chip, Dialog, Tabs, Progress, Skeleton, Toast, EmptyState, Money, Stepper. *(Tokens live in `src/styles/tokens.css` and are mapped with Tailwind v4 `@theme`. Existing pages still use their own CSS. ToastProvider wraps the app.)*
 - [ ] Rebuild the **AppShell**: Header, MobileDock and Footer (out of the 822-line `App.js`), route-level code splitting, PageTransition and a 404 page.
 - [ ] Restyle the homepage on the new system, with all sections kept (§4.2).
 - [ ] Update `.github/agents/vishwakarma.agent.md` to follow DESIGN_PRINCIPLES.md and §8.1. It currently says "glass on ALL cards", which conflicts with the new rules.
 
 🎨 **UI design — V1 Foundation** (already partly built; this finishes and reconciles it):
-- [x] Load Plus Jakarta Sans (400–800) in `public/index.html`.
+- [x] Load Plus Jakarta Sans (400–800) in `index.html`.
 - [x] Install `react-loading-skeleton`.
 - [x] Create `components/shared/`: `GlassCard`, `AnimatedSection`, `SkeletonCard`, `PageTransition`.
-- [ ] Move the `:root` variables from `src/index.css` into `src/styles/tokens.css` per DESIGN_PRINCIPLES §2 and §11. Replace `--home-primary`, `--course-primary`, … with `--accent-500` / `--accent-700` driven by `data-section`. Keep the old names as aliases until every page is ported, then delete them.
-- [ ] Add the hero-band gradients per section (§2.4) as `--accent-gradient`.
+- [x] Move the `:root` variables from `src/index.css` into `src/styles/tokens.css` per DESIGN_PRINCIPLES §2 and §11. Replace `--home-primary`, `--course-primary`, … with `--accent-500` / `--accent-700` driven by `data-section`. Keep the old names as aliases until every page is ported, then delete them.
+- [x] Add the hero-band gradients per section (§2.4) as `--accent-gradient`.
 - [ ] Update `.glass-card` to the §4.1 `.glass` rule, including the `@supports` and reduced-transparency fallbacks.
 - [ ] `PageTransition`: 8px rise, 200ms. `AnimatedSection`: honour `prefers-reduced-motion`, max 6 staggered items at 40ms.
 - [ ] `SkeletonCard` → `components/ui/Skeleton`: base `--n-100`, highlight tinted from `--accent-500`; shimmer off under reduced motion; shown only after 150ms.
-- [ ] Add JetBrains Mono for code.
+- [x] Add JetBrains Mono for code. *(Loaded from `index.html` next to Plus Jakarta Sans.)*
 
 🎨 **UI design — V8 Header & footer:**
 - [x] Header is transparent at the top and turns glass after 20px of scroll (`backdrop-filter: blur(20px)`, soft shadow, 0.3s transition).

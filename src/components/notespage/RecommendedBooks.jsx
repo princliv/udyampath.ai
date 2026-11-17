@@ -408,4 +408,6 @@ const styles = {
   },
 };
 
+RecommendedBooks.displayName = "RecommendedBooks";
+
 export default RecommendedBooks;

@@ -419,7 +419,6 @@ function AppContent() {
     WebkitBackdropFilter: "blur(14px) saturate(140%)",
     boxShadow: "0 12px 24px rgba(0, 0, 0, 0.25)",
     borderRadius: "50%",
-    textDecoration: "none",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",

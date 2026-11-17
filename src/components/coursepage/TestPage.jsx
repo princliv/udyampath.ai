@@ -6,9 +6,6 @@ import { getAuth } from "firebase/auth";
 
 import { useLocation } from "react-router-dom";
 import { FaCamera, FaMicrophone, FaCheck, FaExpand } from "react-icons/fa";
-// These icons are imported for potential future use
-// eslint-disable-next-line no-unused-vars
-import { FaInfoCircle, FaTimes, FaCompress } from "react-icons/fa";
 
 const TestPage = () => {
   const location = useLocation();
@@ -27,7 +24,6 @@ const TestPage = () => {
   const [showInstructions, setShowInstructions] = useState(true);
   const [cameraEnabled, setCameraEnabled] = useState(false);
   const [microphoneEnabled, setMicrophoneEnabled] = useState(false);
-  // eslint-disable-next-line no-unused-vars
   const [fullscreenMode, setFullscreenMode] = useState(false);
   const [testStarted, setTestStarted] = useState(false);
   const [blockLeave, setBlockLeave] = useState(false);

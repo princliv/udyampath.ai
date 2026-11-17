@@ -5,17 +5,12 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@monaco-editor/react": "^4.7.0",
-    "@react-pdf-viewer/core": "^3.12.0",
-    "@react-pdf-viewer/default-layout": "^3.12.0",
-    "@tensorflow-models/coco-ssd": "^2.2.3",
-    "@tensorflow/tfjs": "^4.22.0",
+    "@radix-ui/react-dialog": "^1.3.1",
+    "@radix-ui/react-tabs": "^1.2.1",
     "compromise": "^14.14.4",
-    "cra-template": "1.2.0",
-    "d3-timer": "^3.0.1",
     "dompurify": "^3.4.0",
     "face-api.js": "^0.22.2",
     "firebase": "^11.5.0",
-    "fortawesome": "^0.0.1-security",
     "framer-motion": "^11.18.2",
     "html2canvas": "^1.4.1",
     "lucide-react": "^0.475.0",
@@ -25,15 +20,10 @@
     "react": "^19.1.0",
     "react-confetti": "^6.4.0",
     "react-dom": "^19.1.0",
-    "react-flow": "^1.0.3",
     "react-icons": "^5.5.0",
     "react-loading-skeleton": "^3.5.0",
-    "react-mindmap": "^2.1.6",
     "react-responsive": "^10.0.1",
-    "react-router": "^6.30.0",
     "react-router-dom": "^6.30.0",
-    "react-scripts": "^5.0.1",
-    "react-transition-group": "^4.4.5",
     "react-use": "^17.6.0",
     "reactflow": "^11.11.4",
     "recharts": "^2.15.3",
@@ -41,28 +31,43 @@
     "web-vitals": "^4.2.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "dev": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "vite",
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "emulators": "firebase emulators:start",
+    "prepare": "husky"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
+  "lint-staged": {
+    "src/components/ui/**/*.{js,jsx}": [
+      "eslint --max-warnings 0",
+      "prettier --write"
     ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "src/lib/**/*.js": [
+      "eslint --max-warnings 0",
+      "prettier --write"
+    ],
+    "src/styles/**/*.css": "prettier --write"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@tailwindcss/vite": "^4.3.5",
+    "@vitejs/plugin-react": "^6.3.0",
+    "eslint": "^9.39.5",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "firebase-tools": "^15.36.0",
+    "globals": "^17.14.0",
+    "husky": "^9.1.7",
+    "jsdom": "^29.1.1",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.10.1",
+    "tailwindcss": "^4.3.5",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.0"
   }
 }
