@@ -621,8 +621,8 @@ Salary math: the job JSON does not store a pay period. `affordability.js` treats
 | V4 Jobs | `jobpage.jsx`, `components/jobpage/` | Phase 5 | **Started (16 Nov 2026):** jobs hero, affordability chip, city compare, job-detail “why this fits”. See §8.0. |
 | V5 Tools | `toolspage.jsx`, `components/toolspage/` | Phase 7 | **Started:** `/toolspage` is the Core pages hub (interview, soft skills, profile). Inner tool screens are not restyled yet. |
 | V6 Notes | `notespage.jsx`, `components/notespage/` | Phase 7 | **Started:** flashcard Again / Got it, PYQ table default |
-| V7 Profile | `profile.jsx`, `components/profile/` | Phase 2 | Not started |
-| V8 Header, footer, auth | `App.jsx`, `AuthModal.jsx` | Header + footer in Phase 1, auth in Phase 2 | **Header and footer done (17 Nov 2026).** Auth modal restyle stays in Phase 2. |
+| V7 Profile | `profile.jsx`, `components/profile/` | Phase 2 | **Done (18 Nov 2026):** violet banner, avatar ring, saved tabs, preferences, blurred edit modal. |
+| V8 Header, footer, auth | `App.jsx`, `AuthModal.jsx` | Header + footer in Phase 1, auth in Phase 2 | **Done (18 Nov 2026).** Header and footer landed on 17 Nov. Auth modal is a solid 420px panel on a blurred backdrop, with labels, password reset, and LinkedIn hidden unless `VITE_LINKEDIN_OIDC=true`. |
 | V9 Recruiter | `recruiter.jsx`, `components/recruiter/` | Phase 8 | **Started:** dark header and gold logout. Dashboard body is still the previous layout. |
 
 **What changes from the original agent file** (DESIGN_PRINCIPLES.md wins):
@@ -717,28 +717,29 @@ Salary math: the job JSON does not store a pay period. `affordability.js` treats
 - V1, V2 and the header/footer part of V8 are complete.
 
 ### Phase 2 — Data layer, auth & profile *(M)*
-- [ ] Bootstrap Firestore. Write `scripts/seed` (§6 migration) and seed both the emulator and dev.
-- [ ] Add TanStack Query, the `lib/firebase.ts` wrapper and typed converters per collection.
-- [ ] **Roles via custom claims:**
+- [x] Bootstrap Firestore. Write `scripts/seed` (§6 migration) and seed both the emulator and dev. **Emulator seed ran 18 Nov 2026** (9 cities, 15 courses, 16 specializations, 10 jobs). `node scripts/seed.mjs --dev` still needs `GOOGLE_APPLICATION_CREDENTIALS`; it was not run against the live project.
+- [x] Add TanStack Query, the `lib/firebase.ts` wrapper and typed converters per collection. **18 Nov 2026.** `useProfile` reads the signed-in profile. Client writes strip `role` and `recruiterStatus`.
+- [x] **Roles via custom claims:**
   - An `onUserCreate` function creates the profile with the `learner` role.
   - Recruiter signup sets `recruiterStatus: pending`, and an admin approves.
   - Create an `admin` bootstrap script.
-- [ ] Add password reset and LinkedIn OIDC (or hide the button behind a flag).
-- [ ] Add **onboarding** `/welcome`: goal/specialization interest, **current city, lifestyle level, living arrangement**.
-- [ ] Make the **profile persistent**: photo/banner to Storage; all 5 tabs, highlights and links saved; preferences editable.
-- [ ] Migrate localStorage features (flashcard bookmarks, HR experiences, adaptability answers) to `users/{uid}/private/*` when logged in. They stay in localStorage for guests.
-- [ ] Write a **rules unit test suite** (emulator), run in CI.
+  **18 Nov 2026.** `functions/index.js` loads in the functions emulator (`onUserCreate`, `approveRecruiter`). It is not deployed. New signups set `recruiterRequested` and cannot post; `scripts/admin.mjs` approves or bootstraps an admin on the emulator. Existing recruiters with no `users/{uid}` doc keep the legacy post path.
+- [x] Add password reset and LinkedIn OIDC (or hide the button behind a flag). **18 Nov 2026.** Reset is in the login modal. LinkedIn stays hidden unless `VITE_LINKEDIN_OIDC=true`.
+- [x] Add **onboarding** `/welcome`: goal/specialization interest, **current city, lifestyle level, living arrangement**. **18 Nov 2026.** One question per step. Signed-in learners with `onboarding.completed` false are sent here. Recruiters and accounts with no Firestore doc are not.
+- [x] Make the **profile persistent**: photo/banner to Storage; all 5 tabs, highlights and links saved; preferences editable. **18 Nov 2026.** Emulator round-trip: create a user, save the profile, sign in again, read it back. A role write was denied. Photo and banner upload to `users/{uid}/...` when a file is chosen.
+- [x] Migrate localStorage features (flashcard bookmarks, HR experiences, adaptability answers) to `users/{uid}/private/*` when logged in. They stay in localStorage for guests. **18 Nov 2026.**
+- [x] Write a **rules unit test suite** (emulator), run in CI. **18 Nov 2026.** `npm run test:rules` passed. CI installs Java 21 and runs it.
 
 🎨 **UI design — V8 Auth** (`AuthModal.jsx`; `/login` and `/signup` open the modal):
-- [ ] Glass modal over a blurred backdrop, entering and leaving with `AnimatePresence` (scale 0.9 → 1, fade).
-- [ ] Inside the modal, a solid form panel (max-width 420px): visible labels, 44px inputs, primary button in `--brand-600`.
-- [ ] The onboarding wizard `/welcome` uses the same look: one question per step with a progress indicator.
+- [x] Glass modal over a blurred backdrop, entering and leaving with `AnimatePresence` (scale 0.9 → 1, fade). **18 Nov 2026.**
+- [x] Inside the modal, a solid form panel (max-width 420px): visible labels, 44px inputs, primary button in `--brand-600`. **18 Nov 2026.** Login DOM showed “Forgot password” and no LinkedIn button.
+- [x] The onboarding wizard `/welcome` uses the same look: one question per step with a progress indicator. **18 Nov 2026.** Headless check showed the first question.
 
 🎨 **UI design — V7 Profile** (`profile.jsx`, `components/profile/`, section accent: violet):
-- [ ] Hero banner with a violet gradient overlay and a fade-in entrance. The avatar has a translucent ring (`3px solid rgb(255 255 255 / .5)`); name and title in white on the banner.
-- [ ] Education, skills, experience and other info: each is its own neutral `Card` panel, revealed together (no per-card scroll animation).
-- [ ] `ProfileEditModal.jsx` / `detailform.jsx`: glass backdrop with `blur(12px)`; solid form surface; inputs get a violet border on focus; modal enters with a spring (scale 0.9 → 1).
-- [ ] Achievement badges and tags pop in with a short stagger. Space is left for the certificates and badges showcase (Phases 3 and 6).
+- [x] Hero banner with a violet gradient overlay and a fade-in entrance. The avatar has a translucent ring (`3px solid rgb(255 255 255 / .5)`); name and title in white on the banner. **18 Nov 2026.** The banner fades via the existing page transition. The profile route is signed-in only, so the hero was not opened in the logged-out browser check.
+- [x] Education, skills, experience and other info: each is its own neutral `Card` panel, revealed together (no per-card scroll animation). **18 Nov 2026.** Cost-of-living preferences sit on a `Card`. The five tabs stay in one form and save together.
+- [x] `ProfileEditModal.jsx` / `detailform.jsx`: glass backdrop with `blur(12px)`; solid form surface; inputs get a violet border on focus; modal enters with a spring (scale 0.9 → 1). **18 Nov 2026.**
+- [x] Achievement badges and tags pop in with a short stagger. Space is left for the certificates and badges showcase (Phases 3 and 6). **18 Nov 2026.** Saved highlights stagger in. The certificate and badge list stays empty until Phases 3 and 6.
 
 **Exit:**
 - A new user can sign up, onboard, edit their profile, reload, and see everything saved. A recruiter can't post until approved.

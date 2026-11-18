@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { auth } from "../../firebase/firebase";
+import { loadPrivate, savePrivate } from "../../lib/privateStore";
 
 // Sample tag categories
 const categories = [
@@ -24,7 +26,9 @@ const HrInterview = () => {
       .then((response) => response.json())
       .then((data) => {
         setQuestions(data.hr_questions || []);
-        setUserExperiences(JSON.parse(localStorage.getItem("userExperiences")) || []);
+        loadPrivate(auth.currentUser?.uid, "hrExperiences", "userExperiences", []).then((saved) => {
+          setUserExperiences(Array.isArray(saved) ? saved : []);
+        });
         setLoading(false);
       })
       .catch((error) => console.error("Error loading HR data:", error));
@@ -38,7 +42,7 @@ const HrInterview = () => {
       { experience: newExperience, category: selectedCategory || "General" },
     ];
     setUserExperiences(updatedExperiences);
-    localStorage.setItem("userExperiences", JSON.stringify(updatedExperiences));
+    savePrivate(auth.currentUser?.uid, "hrExperiences", "userExperiences", updatedExperiences);
     setNewExperience("");
   };
 

@@ -9,17 +9,46 @@ service cloud.firestore {
       return signedIn() && request.auth.uid == uid;
     }
 
-    // Recruiter posts: public read, only that recruiter can write.
-    match /Recruiters/{uid}/{contentType}/{docId} {
-      allow read: if true;
-      allow create: if isOwner(uid)
-        && request.resource.data.recruiterId == uid;
-      allow update, delete: if isOwner(uid)
-        && resource.data.recruiterId == uid
-        && request.resource.data.recruiterId == uid;
+    function isAdmin() {
+      return signedIn()
+        && 'admin' in request.auth.token
+        && request.auth.token.admin == true;
     }
 
-    // Applications: the applicant writes their own; that recruiter can read them.
+    function userPath(uid) {
+      return /databases/$(database)/documents/users/$(uid);
+    }
+
+    function approvedRecruiter() {
+      let userData = exists(userPath(request.auth.uid))
+        ? get(userPath(request.auth.uid)).data
+        : {};
+      return signedIn() && (
+        ('admin' in request.auth.token && request.auth.token.admin == true)
+        || ('recruiterStatus' in request.auth.token && request.auth.token.recruiterStatus == 'approved')
+        || ('recruiterStatus' in userData && userData.recruiterStatus == 'approved')
+      );
+    }
+
+    // A recruiter account created before this ruleset has no users/{uid} doc.
+    // New signups write that doc, so they stay blocked until an admin approves them.
+    function legacyRecruiter(uid) {
+      return isOwner(uid) && !exists(userPath(uid));
+    }
+
+    function catalogWrite() {
+      return isAdmin();
+    }
+
+    match /Recruiters/{uid}/{contentType}/{docId} {
+      allow read: if true;
+      allow create: if request.resource.data.recruiterId == uid
+        && (approvedRecruiter() && isOwner(uid) || legacyRecruiter(uid));
+      allow update, delete: if resource.data.recruiterId == uid
+        && request.resource.data.recruiterId == uid
+        && (approvedRecruiter() && isOwner(uid) || legacyRecruiter(uid));
+    }
+
     match /Users/{uid}/AppliedJobs/{applicationId} {
       allow read: if isOwner(uid)
         || (signedIn() && resource.data.recruiterId == request.auth.uid);
@@ -28,9 +57,55 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
-    // Course test scores stored at users/{uid}/{courseTitle}/testScore
     match /users/{uid}/{courseTitle}/{scoreId} {
       allow read, write: if isOwner(uid);
+    }
+
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+      allow create: if isOwner(uid)
+        && !request.resource.data.keys().hasAny(['role', 'recruiterStatus']);
+      allow update: if isAdmin()
+        || (
+          isOwner(uid)
+          && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'recruiterStatus'])
+        );
+      allow delete: if false;
+
+      match /private/{docId} {
+        allow read, write: if isOwner(uid);
+      }
+    }
+
+    match /courses/{id} {
+      allow read: if true;
+      allow write: if catalogWrite();
+    }
+
+    match /specializations/{id} {
+      allow read: if true;
+      allow write: if catalogWrite();
+    }
+
+    match /cities/{id} {
+      allow read: if true;
+      allow write: if catalogWrite();
+    }
+
+    match /jobs/{id} {
+      allow read: if true;
+      allow create: if approvedRecruiter()
+        && request.resource.data.recruiterId == request.auth.uid;
+      allow update, delete: if isAdmin()
+        || (
+          approvedRecruiter()
+          && resource.data.recruiterId == request.auth.uid
+          && request.resource.data.recruiterId == request.auth.uid
+        );
+    }
+
+    match /questionBanks/{courseId}/questions/{id} {
+      allow read, write: if false;
     }
   }
 }

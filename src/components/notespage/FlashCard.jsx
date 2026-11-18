@@ -5,6 +5,8 @@ import { FaChevronLeft, FaChevronRight, FaRandom, FaRedo } from 'react-icons/fa'
 import { IoMdFlash } from 'react-icons/io';
 import { RiBookmarkFill, RiBookmarkLine } from 'react-icons/ri';
 import { useWindowSize } from 'react-use';
+import { auth } from '../../firebase/firebase';
+import { loadPrivate, savePrivate } from '../../lib/privateStore';
 
 const FlashCard = () => {
   const [flashcards, setFlashcards] = useState([]);
@@ -58,8 +60,9 @@ const FlashCard = () => {
   }, [selectedCategory, currentBatch, batches]);
 
   useEffect(() => {
-    const savedBookmarks = JSON.parse(localStorage.getItem('flashcardBookmarks')) || [];
-    setBookmarkedCards(savedBookmarks);
+    loadPrivate(auth.currentUser?.uid, "flashcards", "flashcardBookmarks", []).then((saved) => {
+      setBookmarkedCards(Array.isArray(saved) ? saved : []);
+    });
   }, []);
 
   const currentCard = filteredCards[activeCard];
@@ -110,7 +113,7 @@ const FlashCard = () => {
       ? bookmarkedCards.filter(id => id !== currentCard.id)
       : [...bookmarkedCards, currentCard.id];
     setBookmarkedCards(newBookmarks);
-    localStorage.setItem('flashcardBookmarks', JSON.stringify(newBookmarks));
+    savePrivate(auth.currentUser?.uid, "flashcards", "flashcardBookmarks", newBookmarks);
   };
 
   const markAsMastered = () => {

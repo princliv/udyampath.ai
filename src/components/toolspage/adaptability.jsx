@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { auth } from "../../firebase/firebase";
+import { loadPrivate, savePrivate } from "../../lib/privateStore";
 
 const Adaptability = () => {
   const [answers, setAnswers] = useState({});
@@ -12,14 +14,13 @@ const Adaptability = () => {
   ];
 
   useEffect(() => {
-    const savedAnswers = JSON.parse(localStorage.getItem("adaptabilityAnswers"));
-    if (savedAnswers) {
-      setAnswers(savedAnswers);
-    }
+    loadPrivate(auth.currentUser?.uid, "adaptability", "adaptabilityAnswers", null).then((savedAnswers) => {
+      if (savedAnswers) setAnswers(savedAnswers);
+    });
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("adaptabilityAnswers", JSON.stringify(answers));
+    savePrivate(auth.currentUser?.uid, "adaptability", "adaptabilityAnswers", answers);
     const completedQuestions = Object.values(answers).filter((answer) => answer !== "").length;
     setProgress((completedQuestions / questions.length) * 100);
   }, [answers, questions.length]);

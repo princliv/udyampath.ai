@@ -6,6 +6,8 @@ import WorkshopModal from "./WorkshopModal";
 import QuizModal from "./QuizModal";
 import HackathonModal from "./HackathonModal";
 import { CONTENT_TYPES, fetchMyRecruiterContent, fetchRecruiterApplications } from "../../firebase/recruiterContent";
+import { auth } from "../../firebase/firebase";
+import { readProfile } from "../../lib/firebase";
 
 const RecruiterHome = () => {
   const [activeModal, setActiveModal] = useState(null);
@@ -16,6 +18,7 @@ const RecruiterHome = () => {
     hackathons: 0,
   });
   const [applications, setApplications] = useState([]);
+  const [postingBlocked, setPostingBlocked] = useState(false);
 
   const openModal = (category) => setActiveModal(category);
   const closeModal = () => setActiveModal(null);
@@ -44,6 +47,13 @@ const RecruiterHome = () => {
     };
 
     loadCounts();
+    const uid = auth.currentUser?.uid;
+    if (!uid) return;
+    readProfile(uid)
+      .then((profile) => {
+        if (profile && profile.recruiterStatus !== "approved") setPostingBlocked(true);
+      })
+      .catch((error) => console.error("Could not read recruiter status:", error));
   }, [activeModal]);
 
   const containerStyle = {
@@ -151,10 +161,15 @@ const RecruiterHome = () => {
 
       {/* Create Section */}
       <div style={createStyle}>
+        {postingBlocked ? (
+          <p style={{ margin: "0 0 12px", color: "#92400e", background: "#fef3c7", padding: "12px", borderRadius: "8px" }}>
+            Your recruiter account is waiting for approval. You can look around, and posting opens after an admin approves you.
+          </p>
+        ) : null}
         {createCategories.map((category, index) => (
           <div key={index} style={itemStyle}>
             <span>{category}</span>
-            <button style={createButtonStyle} onClick={() => openModal(category)}>
+            <button style={{ ...createButtonStyle, opacity: postingBlocked ? 0.5 : 1 }} onClick={() => openModal(category)} disabled={postingBlocked}>
               CREATE
             </button>
           </div>

@@ -5,11 +5,11 @@ import globals from "globals";
 
 export default [
   {
-    ignores: ["dist/**", "build/**", "node_modules/**", "public/**", "coverage/**"],
+    ignores: ["dist/**", "build/**", "node_modules/**", "public/**", "coverage/**", "functions/**"],
   },
   js.configs.recommended,
   {
-    files: ["**/*.{js,jsx}"],
+    files: ["**/*.{js,jsx,mjs}"],
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: "module",

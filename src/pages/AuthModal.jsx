@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { signInWithGoogle, signInWithEmail, signUpWithEmail, getUserProfile, homeForRole } from "../firebase/firebase";
+import { AnimatePresence, motion } from "framer-motion";
+import { signInWithGoogle, signInWithEmail, signUpWithEmail, getUserProfile, homeForRole, sendPasswordReset } from "../firebase/firebase";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { FaLinkedin } from "react-icons/fa";
@@ -25,7 +26,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = "login" }) => {
     }
   }, [isOpen, initialMode]);
 
-  if (!isOpen) return null;
+  const linkedInEnabled = import.meta.env.VITE_LINKEDIN_OIDC === "true";
 
   const resetForm = () => {
     setEmail("");
@@ -90,9 +91,31 @@ const AuthModal = ({ isOpen, onClose, initialMode = "login" }) => {
     ...(isSignup ? styles.inputDense : null),
   };
 
+  const handleReset = async () => {
+    if (!email) {
+      alert("Enter your email, then ask for a reset link.");
+      return;
+    }
+    try {
+      await sendPasswordReset(email);
+      alert("Password reset email sent.");
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
   return (
-    <div style={styles.overlay} onClick={onClose}>
-      <div style={styles.modal} onClick={(event) => event.stopPropagation()}>
+    <AnimatePresence>
+      {isOpen ? (
+    <motion.div style={styles.overlay} onClick={() => onClose()} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+      <motion.div
+        style={styles.modal}
+        onClick={(event) => event.stopPropagation()}
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        transition={{ duration: 0.2 }}
+      >
         <button style={styles.closeButton} onClick={onClose} aria-label="Close auth modal">
           x
         </button>
@@ -127,9 +150,11 @@ const AuthModal = ({ isOpen, onClose, initialMode = "login" }) => {
           <FcGoogle style={styles.icon} /> Continue with Google
         </button>
 
-        <button style={{ ...styles.socialButton, ...styles.linkedinButton }} type="button">
-          <FaLinkedin style={styles.icon} /> Continue with LinkedIn
-        </button>
+        {linkedInEnabled ? (
+          <button style={{ ...styles.socialButton, ...styles.linkedinButton }} type="button">
+            <FaLinkedin style={styles.icon} /> Continue with LinkedIn
+          </button>
+        ) : null}
 
         <p style={styles.orText}>Or {isSignup ? "sign up" : "log in"} with email</p>
 
@@ -190,19 +215,22 @@ const AuthModal = ({ isOpen, onClose, initialMode = "login" }) => {
             </>
           )}
 
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={inputStyle}
-            required
-          />
+          <label style={styles.label}>
+            Email
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={inputStyle}
+              required
+            />
+          </label>
 
+          <label style={styles.label}>
+            Password
           <div style={styles.passwordContainer}>
             <input
               type={showPassword ? "text" : "password"}
-              placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               style={inputStyle}
@@ -212,6 +240,12 @@ const AuthModal = ({ isOpen, onClose, initialMode = "login" }) => {
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </span>
           </div>
+          </label>
+          {!isSignup ? (
+            <button type="button" style={styles.switchButton} onClick={handleReset}>
+              Forgot password
+            </button>
+          ) : null}
 
           {isSignup && (
             <div style={styles.passwordContainer}>
@@ -244,8 +278,10 @@ const AuthModal = ({ isOpen, onClose, initialMode = "login" }) => {
             {isSignup ? "Log in" : "Sign up"}
           </button>
         </p>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
+      ) : null}
+    </AnimatePresence>
   );
 };
 
@@ -263,15 +299,13 @@ const styles = {
     zIndex: 1600,
   },
   modal: {
-    width: "min(92vw, 430px)",
+    width: "min(92vw, 420px)",
     maxHeight: "92vh",
     overflowY: "auto",
     borderRadius: "18px",
     padding: "22px 18px 18px",
-    background: "rgba(255, 255, 255, 0.18)",
-    backdropFilter: "blur(22px) saturate(165%)",
-    WebkitBackdropFilter: "blur(22px) saturate(165%)",
-    border: "1px solid rgba(255, 255, 255, 0.34)",
+    background: "#ffffff",
+    border: "1px solid var(--n-200)",
     boxShadow: "0 18px 45px rgba(0, 0, 0, 0.28)",
     position: "relative",
   },
@@ -284,7 +318,7 @@ const styles = {
     borderRadius: "50%",
     border: "1px solid rgba(255, 255, 255, 0.34)",
     background: "rgba(255, 255, 255, 0.16)",
-    color: "#f4faff",
+    color: "var(--n-800)",
     fontSize: "15px",
     cursor: "pointer",
   },
@@ -305,7 +339,7 @@ const styles = {
   },
   title: {
     margin: "0 0 14px",
-    color: "#ffffff",
+    color: "var(--n-900)",
     fontSize: "32px",
     lineHeight: 1.1,
     fontWeight: 800,
@@ -320,8 +354,8 @@ const styles = {
     borderRadius: "10px",
     border: "1px solid rgba(255, 255, 255, 0.34)",
     padding: "9px 8px",
-    background: "rgba(255, 255, 255, 0.16)",
-    color: "#eef8ff",
+    background: "var(--n-50)",
+    color: "var(--n-800)",
     fontSize: "13px",
     fontWeight: 700,
     cursor: "pointer",
@@ -354,10 +388,18 @@ const styles = {
     marginRight: "8px",
     fontSize: "16px",
   },
+  label: {
+    display: "block",
+    marginBottom: "8px",
+    color: "var(--n-800)",
+    fontSize: "14px",
+    fontWeight: 700,
+    textAlign: "left",
+  },
   orText: {
     margin: "10px 0",
     fontSize: "13px",
-    color: "rgba(238, 248, 255, 0.9)",
+    color: "var(--n-600)",
     textAlign: "center",
   },
   row: {
@@ -370,9 +412,10 @@ const styles = {
     borderRadius: "10px",
     border: "1px solid rgba(255, 255, 255, 0.38)",
     background: "rgba(255, 255, 255, 0.9)",
+    minHeight: "44px",
     padding: "10px 11px",
     marginBottom: "10px",
-    fontSize: "13px",
+    fontSize: "15px",
     color: "#102a43",
   },
   inputDense: {
@@ -394,8 +437,8 @@ const styles = {
     flexWrap: "wrap",
     gap: "8px",
     marginBottom: "8px",
-    color: "#eef8ff",
-    fontSize: "12px",
+    color: "var(--n-800)",
+    fontSize: "14px",
   },
   genderOption: {
     display: "inline-flex",
@@ -408,8 +451,9 @@ const styles = {
     borderRadius: "10px",
     padding: "11px",
     color: "#ffffff",
-    background: "linear-gradient(135deg, #1181c8 0%, #004aad 100%)",
-    boxShadow: "0 12px 24px rgba(17, 129, 200, 0.35)",
+    background: "var(--brand-600)",
+    minHeight: "44px",
+    boxShadow: "none",
     fontSize: "14px",
     fontWeight: 700,
     cursor: "pointer",
@@ -417,7 +461,7 @@ const styles = {
   },
   switchText: {
     margin: "10px 0 0",
-    color: "rgba(238, 248, 255, 0.9)",
+    color: "var(--n-800)",
     fontSize: "13px",
     textAlign: "center",
   },
@@ -425,7 +469,7 @@ const styles = {
     marginLeft: "8px",
     background: "none",
     border: "none",
-    color: "#d4ecff",
+    color: "var(--brand-600)",
     textDecoration: "underline",
     fontWeight: 700,
     cursor: "pointer",

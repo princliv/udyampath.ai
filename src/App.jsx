@@ -4,7 +4,8 @@ import { get, ref } from "firebase/database";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { BrowserRouter as Router, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
-import { auth, database } from "./firebase/firebase";
+import { auth, database, firestore } from "./firebase/firebase";
+import { doc, getDoc } from "firebase/firestore";
 import AuthModal from "./pages/AuthModal";
 import FounderNoteModal from "./pages/FounderModal";
 import Header from "./components/layout/Header";
@@ -51,6 +52,7 @@ const InterCheck = lazy(() => import("./components/jobpage/InterviewCheck"));
 const InternApply = lazy(() => import("./components/jobpage/internApply"));
 const JobDetail = lazy(() => import("./components/jobpage/jobDetails"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const Welcome = lazy(() => import("./pages/Welcome"));
 
 function ProtectedRoute({ user, loading, children }) {
   if (loading) return null;
@@ -113,6 +115,23 @@ function AppContent() {
     const timer = setTimeout(() => setShowModal(true), 20000);
     return () => clearTimeout(timer);
   }, [founderSeenKey, isAuthLoading]);
+
+  useEffect(() => {
+    if (!user || isAuthLoading) return undefined;
+    let cancelled = false;
+    getDoc(doc(firestore, "users", user.uid))
+      .then((snap) => {
+        if (cancelled || !snap.exists()) return;
+        const data = snap.data();
+        if (data.recruiterRequested || data.onboarding?.completed) return;
+        if (location.pathname === "/welcome") return;
+        navigate("/welcome", { replace: true });
+      })
+      .catch((error) => console.error("Could not read onboarding:", error));
+    return () => {
+      cancelled = true;
+    };
+  }, [user, isAuthLoading, location.pathname, navigate]);
 
   useEffect(() => {
     if (location.pathname === "/login") {
@@ -178,6 +197,7 @@ function AppContent() {
               <Routes location={location}>
                 <Route path="/" element={<Homepage />} />
                 <Route path="/homepage" element={<Homepage />} />
+                <Route path="/welcome" element={<Welcome />} />
                 <Route path="/coursepage" element={<CoursePage />} />
                 <Route path="/jobpage" element={<JobPage />} />
                 <Route path="/toolspage" element={<ToolsPage />} />

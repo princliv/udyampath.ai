@@ -8,9 +8,10 @@ import {
   setPersistence,
   browserLocalPersistence,
   connectAuthEmulator,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 import { connectDatabaseEmulator, get, getDatabase, ref, set } from "firebase/database";
-import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
+import { connectFirestoreEmulator, doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
 
 const firebaseConfig = {
@@ -69,6 +70,39 @@ export const getUserProfile = async (uid) => {
 export const homeForRole = (userType) =>
   String(userType || "").toLowerCase() === "recruiter" ? "/recruiter" : "/homepage";
 
+export async function ensureUserDocument(user, options = {}) {
+  if (!user?.uid) return null;
+  const userRef = doc(firestore, "users", user.uid);
+  const existing = await getDoc(userRef);
+  if (existing.exists()) return existing.data();
+
+  const requested = String(options.userType || "").toLowerCase();
+  const recruiter = requested === "recruiter";
+  if (!options.isNew && !requested) return null;
+
+  const profile = {
+    displayName:
+      [options.firstName, options.lastName].filter(Boolean).join(" ") || user.displayName || "",
+    email: user.email || "",
+    phone: options.phone || "",
+    recruiterRequested: recruiter,
+    onboarding: { completed: recruiter },
+    preferences: {},
+    links: {},
+    highlights: [],
+    education: [],
+    experience: [],
+    skills: [],
+    documents: [],
+  };
+  await setDoc(userRef, profile, { merge: true });
+  return profile;
+}
+
+export async function sendPasswordReset(email) {
+  await sendPasswordResetEmail(auth, email);
+}
+
 // Creates users/{uid} only when it is missing, so a later Google sign-in
 // cannot overwrite an existing role.
 export const signInWithGoogle = async (options = {}) => {
@@ -92,6 +126,12 @@ export const signInWithGoogle = async (options = {}) => {
       userType: requested.toLowerCase() === "recruiter" ? "Recruiter" : "Candidate",
     };
     await set(userRef, profile);
+    await ensureUserDocument(user, {
+      firstName,
+      lastName,
+      userType: profile.userType,
+      isNew: true,
+    });
     return { user, profile };
   } catch (error) {
     console.error("Google Sign-In Error:", error.message);
@@ -124,6 +164,7 @@ export const signUpWithEmail = async (email, password, firstName, lastName, phon
       phone,
       userType,
     });
+    await ensureUserDocument(user, { firstName, lastName, phone, userType, isNew: true });
 
     return user;
   } catch (error) {

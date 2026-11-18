@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { auth } from "../../firebase/firebase";
+import { readProfile, uploadUserFile, writeProfile } from "../../lib/firebase";
 import { Edit2 } from "lucide-react"; // Importing Edit Icon
 import "./css/DetailForm.css";
 import errorGif from "../../assets/profile/error.gif";  // Adjust the path as per your project structure
@@ -49,19 +51,30 @@ const DetailForm = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [documents, setDocuments] = useState([]);
 
-  const handleAddDocument = () => {
+  const handleAddDocument = async () => {
     if (!documentName || !selectedFile) {
       alert("Please enter document name and select a file.");
       return;
     }
-    setDocuments([...documents, { name: documentName, file: selectedFile }]);
+    const uid = auth.currentUser?.uid;
+    let path = "";
+    if (uid) {
+      const uploaded = await uploadUserFile(uid, selectedFile, "documents");
+      path = uploaded.path;
+    }
+    const next = [...documents, { name: documentName, path }];
+    setDocuments(next);
     setDocumentName("");
     setSelectedFile(null);
+    if (uid) await persist({ documents: next });
   };
 
   const handleViewDocument = (doc) => {
-    const fileURL = URL.createObjectURL(doc.file);
-    window.open(fileURL, "_blank");
+    if (doc.path) {
+      window.open(doc.path, "_blank");
+      return;
+    }
+    if (doc.file) window.open(URL.createObjectURL(doc.file), "_blank");
   };
 
   const handleRemoveDocument = (index) => {
@@ -69,6 +82,47 @@ const DetailForm = () => {
   };  
 
   const tabs = ["Personal Info", "Education", "Experience", "Skills", "Documents"];
+
+  useEffect(() => {
+    const uid = auth.currentUser?.uid;
+    if (!uid) return undefined;
+    let cancelled = false;
+    readProfile(uid)
+      .then((profile) => {
+        if (cancelled || !profile) return;
+        if (profile.form) setFormData((current) => ({ ...current, ...profile.form }));
+        if (profile.highlights?.[0]) setHighlightDate(profile.highlights[0]);
+        if (profile.links) {
+          setLinks({
+            LinkedIn: profile.links.linkedin || "",
+            Portfolio: profile.links.portfolio || "",
+            GitHub: profile.links.github || "",
+          });
+        }
+        if (profile.documents) setDocuments(profile.documents);
+      })
+      .catch((error) => console.error("Could not load profile:", error));
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const persist = async (extra = {}) => {
+    const uid = auth.currentUser?.uid;
+    if (!uid) return;
+    await writeProfile(uid, {
+      displayName: formData.FullName,
+      phone: formData.Phone,
+      location: { label: [formData.City, formData.State].filter(Boolean).join(", "), state: formData.State },
+      education: formData.University ? [{ university: formData.University, institute: formData.Institute, course: formData.Course, branch: formData.Branch }] : [],
+      experience: formData.Company ? [{ company: formData.Company, position: formData.Position }] : [],
+      skills: [formData.TechnicalSkills, formData.SoftSkills].filter(Boolean),
+      links: { linkedin: links.LinkedIn, portfolio: links.Portfolio, github: links.GitHub },
+      highlights: [highlightDate].filter(Boolean),
+      form: formData,
+      ...extra,
+    });
+  };
 
   const handleSave = () => {
     if (!formData.FullName || !formData.DateOfBirth || !formData.Gender || !formData.Phone || !formData.Country || !formData.University || !formData.Institute || !formData.Course || !formData.Branch || !formData.StartDate ) {
@@ -86,6 +140,7 @@ const DetailForm = () => {
             </div>
         );
         setIsSaved(true);
+        persist().catch((error) => console.error("Could not save profile:", error));
     }
     setShowModal(true);
   };
@@ -134,7 +189,7 @@ const DetailForm = () => {
               value={highlightDate}
               onChange={(e) => setHighlightDate(e.target.value)}
             />
-            <button onClick={() => setIsEditingHighlight(false)}>Save</button>
+            <button onClick={() => { setIsEditingHighlight(false); persist().catch((error) => console.error(error)); }}>Save</button>
           </div>
         </div>
       )}
@@ -154,7 +209,7 @@ const DetailForm = () => {
                 />
               </div>
             ))}
-            <button onClick={() => setShowLinksModal(false)}>Save</button>
+            <button onClick={() => { setShowLinksModal(false); persist().catch((error) => console.error(error)); }}>Save</button>
           </div>
         </div>
       )}

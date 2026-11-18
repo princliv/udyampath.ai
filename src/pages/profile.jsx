@@ -1,4 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { auth } from "../firebase/firebase";
+import { uploadUserFile, writeProfile } from "../lib/firebase";
+import { useProfile } from "../lib/useProfile";
+import { Card } from "../components/ui";
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { FiPlus } from "react-icons/fi"; // Import the plus icon
@@ -12,13 +17,30 @@ const ProfilePage = () => {
   const [name, setName] = useState("Your Name");
   const [location, setLocation] = useState("City, Country");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [lifestyle, setLifestyle] = useState("medium");
+  const [arrangement, setArrangement] = useState("shared");
+  const { data: savedProfile } = useProfile();
 
-  const handleImageChange = (event) => {
+  useEffect(() => {
+    if (!savedProfile) return;
+    if (savedProfile.displayName) setName(savedProfile.displayName);
+    if (savedProfile.location?.label) setLocation(savedProfile.location.label);
+    if (savedProfile.photoURL) setProfileImage(savedProfile.photoURL);
+    if (savedProfile.bannerURL) setBannerImage(savedProfile.bannerURL);
+    if (savedProfile.preferences?.lifestyle) setLifestyle(savedProfile.preferences.lifestyle);
+    if (savedProfile.preferences?.arrangement) setArrangement(savedProfile.preferences.arrangement);
+  }, [savedProfile]);
+
+  const handleImageChange = async (event) => {
     const file = event.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setBannerImage(imageUrl);
-    }
+    if (!file) return;
+    const localUrl = URL.createObjectURL(file);
+    setBannerImage(localUrl);
+    const uid = auth.currentUser?.uid;
+    if (!uid) return;
+    const uploaded = await uploadUserFile(uid, file, "banner");
+    setBannerImage(uploaded.url);
+    await writeProfile(uid, { bannerURL: uploaded.url });
   };
 
   const handleRemoveImage = () => {
@@ -83,7 +105,9 @@ const ProfilePage = () => {
 
         {/* Right Rectangle - Dynamic Banner Section */}
         <div style={{ 
-          backgroundImage: bannerImage ? `url(${bannerImage})` : "none",
+          backgroundImage: bannerImage
+            ? `linear-gradient(180deg, rgb(76 29 149 / .35), rgb(76 29 149 / .72)), url(${bannerImage})`
+            : "linear-gradient(135deg, #8b5cf6, #4c1d95)",
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -97,8 +121,14 @@ const ProfilePage = () => {
           alignItems: "center",
           justifyContent: "center",
           boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
-          border: bannerImage ? "none" : "2px solid #f0f0f0" // Border only when no image is set
+          border: "none",
+          color: "#fff",
         }}>
+          <div style={{ textAlign: "left", zIndex: 1 }}>
+            <div style={{ width: 72, height: 72, borderRadius: "50%", border: "3px solid rgb(255 255 255 / .5)", backgroundImage: `url(${profileImage || defaultProfileImage})`, backgroundSize: "cover", marginBottom: 8 }} />
+            <h2 style={{ margin: 0, fontWeight: 800 }}>{name}</h2>
+            <p style={{ margin: "4px 0 0" }}>{location}</p>
+          </div>
 
           <input 
             type="file" 
@@ -180,12 +210,15 @@ const ProfilePage = () => {
         toggleModal={toggleModal}
         profileImage={profileImage}
         setProfileImage={setProfileImage} // Pass setProfileImage
-        handleProfileChange={(e) => {
-          const file = e.target.files[0];
-          if (file) {
-            const imageUrl = URL.createObjectURL(file);
-            setProfileImage(imageUrl);
-          }
+        handleProfileChange={async (e) => {
+          const file = e.target.files?.[0];
+          if (!file) return;
+          setProfileImage(URL.createObjectURL(file));
+          const uid = auth.currentUser?.uid;
+          if (!uid) return;
+          const uploaded = await uploadUserFile(uid, file, "photo");
+          setProfileImage(uploaded.url);
+          await writeProfile(uid, { photoURL: uploaded.url, displayName: name });
         }}
         name={name}
         setName={setName}
@@ -194,7 +227,57 @@ const ProfilePage = () => {
         defaultProfileImage={defaultProfileImage} // Pass default image as prop
       />
       
-      {/* Detail Form */}
+      <Card>
+        <h3 style={{ marginTop: 0 }}>Cost of living</h3>
+        <p style={{ color: "var(--n-600)" }}>These preferences change how a salary is compared with a city.</p>
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+          <label>
+            Lifestyle
+            <select value={lifestyle} onChange={(event) => setLifestyle(event.target.value)} style={{ display: "block", minHeight: 44, marginTop: 4 }}>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+          </label>
+          <label>
+            Living
+            <select value={arrangement} onChange={(event) => setArrangement(event.target.value)} style={{ display: "block", minHeight: 44, marginTop: 4 }}>
+              <option value="shared">Shared</option>
+              <option value="single">On my own</option>
+            </select>
+          </label>
+          <button
+            type="button"
+            style={{ alignSelf: "end", minHeight: 44, background: "var(--brand-600)", color: "#fff", border: 0, borderRadius: 10, padding: "0 16px", fontWeight: 700 }}
+            onClick={() => {
+              const uid = auth.currentUser?.uid;
+              if (!uid) return;
+              writeProfile(uid, { preferences: { ...(savedProfile?.preferences || {}), lifestyle, arrangement } });
+            }}
+          >
+            Save preferences
+          </button>
+        </div>
+      </Card>
+
+      <Card>
+        <h3 style={{ marginTop: 0 }}>Highlights</h3>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          {(savedProfile?.highlights || []).map((item, index) => (
+            <motion.span
+              key={item}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.04 }}
+              style={{ border: "1px solid var(--n-200)", borderRadius: 999, padding: "6px 10px", fontWeight: 700 }}
+            >
+              {item}
+            </motion.span>
+          ))}
+        </div>
+        <p style={{ color: "var(--n-600)" }}>Certificates and badges will sit in this space.</p>
+      </Card>
+
       <DetailForm />
     </div>
   );
