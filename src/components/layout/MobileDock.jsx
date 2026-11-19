@@ -34,7 +34,7 @@ export default function MobileDock({ user, onLogin, onLogout }) {
           <Home size={20} aria-hidden="true" />
           <span>Home</span>
         </NavLink>
-        <NavLink to="/coursepage" aria-label="Courses">
+        <NavLink to="/explore" aria-label="Courses">
           <BookOpen size={20} aria-hidden="true" />
           <span>Courses</span>
         </NavLink>

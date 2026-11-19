@@ -18,7 +18,7 @@ export default function Footer() {
         </div>
         <div>
           <h2>Products</h2>
-          <Link to="/coursepage">Courses</Link>
+          <Link to="/explore">Courses</Link>
           <br />
           <Link to="/specializations">Specializations</Link>
           <br />

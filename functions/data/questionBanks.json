@@ -1,0 +1,137 @@
+[
+  {
+    "id": "quiz-oop",
+    "courseId": "*",
+    "usage": "quiz",
+    "prompt": "Which idea keeps an object's data private and exposes methods to change it?",
+    "options": ["Encapsulation", "Recursion", "Compilation", "Hashing"],
+    "correct": 0,
+    "explanation": "Encapsulation bundles data with the methods that are allowed to change it."
+  },
+  {
+    "id": "quiz-stack",
+    "courseId": "*",
+    "usage": "quiz",
+    "prompt": "A stack removes which item first?",
+    "options": ["The oldest item", "The newest item", "A random item", "The middle item"],
+    "correct": 1,
+    "explanation": "A stack is last-in, first-out."
+  },
+  {
+    "id": "quiz-http",
+    "courseId": "*",
+    "usage": "quiz",
+    "prompt": "Which status means the request succeeded?",
+    "options": ["404", "500", "200", "301"],
+    "correct": 2,
+    "explanation": "200 OK means the server completed the request."
+  },
+  {
+    "id": "quiz-sql",
+    "courseId": "*",
+    "usage": "quiz",
+    "prompt": "Which SQL clause filters rows after they are grouped?",
+    "options": ["WHERE", "ORDER BY", "HAVING", "LIMIT"],
+    "correct": 2,
+    "explanation": "HAVING filters grouped rows. WHERE filters rows before grouping."
+  },
+  {
+    "id": "final-complexity",
+    "courseId": "*",
+    "usage": "final",
+    "prompt": "Binary search on a sorted array is which complexity?",
+    "options": ["O(n)", "O(log n)", "O(n²)", "O(1)"],
+    "correct": 1,
+    "explanation": "Each step halves the remaining search space."
+  },
+  {
+    "id": "final-index",
+    "courseId": "*",
+    "usage": "final",
+    "prompt": "Why add an index to a column used in frequent lookups?",
+    "options": ["To make the table larger", "To speed up those lookups", "To encrypt the column", "To remove duplicates automatically"],
+    "correct": 1,
+    "explanation": "An index lets the database find matching rows without scanning the whole table."
+  },
+  {
+    "id": "final-rest",
+    "courseId": "*",
+    "usage": "final",
+    "prompt": "Which method is the usual choice for creating a resource?",
+    "options": ["GET", "POST", "HEAD", "OPTIONS"],
+    "correct": 1,
+    "explanation": "POST is the usual method for creating a resource."
+  },
+  {
+    "id": "final-git",
+    "courseId": "*",
+    "usage": "final",
+    "prompt": "What does a passing unit test prove by itself?",
+    "options": ["The whole product is bug-free", "The checked behaviour matched the assertion", "The code is fast", "The user will like the design"],
+    "correct": 1,
+    "explanation": "A unit test only shows that the behaviour it asserts is true."
+  },
+  {
+    "id": "pre-variable",
+    "courseId": "*",
+    "usage": "pre",
+    "prompt": "A variable is best described as what?",
+    "options": ["A named place that holds a value", "A network cable", "A database backup", "A CSS colour"],
+    "correct": 0,
+    "explanation": "A variable names a value the program can read and update."
+  },
+  {
+    "id": "pre-loop",
+    "courseId": "*",
+    "usage": "pre",
+    "prompt": "A loop is used to do what?",
+    "options": ["Repeat a step", "Delete the program", "Compile CSS", "Send an email"],
+    "correct": 0,
+    "explanation": "A loop repeats a step until its condition changes."
+  },
+  {
+    "id": "pre-boolean",
+    "courseId": "*",
+    "usage": "pre",
+    "prompt": "A boolean value can be which of these?",
+    "options": ["True or false", "Any sentence", "Only a date", "A list of files"],
+    "correct": 0,
+    "explanation": "A boolean is true or false."
+  },
+  {
+    "id": "place-array",
+    "courseId": "*",
+    "usage": "placement",
+    "prompt": "What is the index of the first item in a typical array?",
+    "options": ["1", "0", "-1", "10"],
+    "correct": 1,
+    "explanation": "Most programming arrays start at index 0."
+  },
+  {
+    "id": "place-api",
+    "courseId": "*",
+    "usage": "placement",
+    "prompt": "An API is best described as what?",
+    "options": ["A contract for how software talks", "A laptop brand", "A sort of cable", "A payroll month"],
+    "correct": 0,
+    "explanation": "An API is the agreed way for one piece of software to use another."
+  },
+  {
+    "id": "place-bug",
+    "courseId": "*",
+    "usage": "placement",
+    "prompt": "A regression is which kind of problem?",
+    "options": ["A feature that used to work and now fails", "A new city in the catalog", "A faster algorithm", "A passing test"],
+    "correct": 0,
+    "explanation": "A regression is behaviour that used to work and then broke."
+  },
+  {
+    "id": "place-test",
+    "courseId": "*",
+    "usage": "placement",
+    "prompt": "Where should the correct answer of a graded test live?",
+    "options": ["In the page the learner can read", "On the server that scores the attempt", "In the button label", "In local storage"],
+    "correct": 1,
+    "explanation": "The answer key stays on the server so the page cannot grade itself."
+  }
+]

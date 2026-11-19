@@ -746,13 +746,13 @@ Salary math: the job JSON does not store a pay period. `affordability.js` treats
 - The auth modal and profile page match V7 and V8.
 
 ### Phase 3 — Core learning (Coursera parity) + certificates *(L)*
-- [ ] **Catalog `/explore`:** search, filters (topic, level, duration, provider), and course rows (Popular, New, Recommended, Recently viewed) built from **one** `CourseCard`/`CourseRow` component.
-- [ ] **Course page:** hero, sticky enroll card, skills, syllabus accordion, provider, duration. URL `/courses/:slug`.
-- [ ] **Enrollment + lesson player:** outline sidebar, video/text/pdf/image/code lessons, next/prev, auto-saved progress, "resume where you left off".
-- [ ] **Shared Assessment engine:** a single component and engine for quiz, final test and placement test, replacing the 3 existing implementations.
-  - `startAssessment` / `submitAssessment` callable functions do **server-side grading**.
-  - The proctor mode keeps camera + face check (`face-api.js` tiny detector), fullscreen and tab-switch counting.
-- [ ] **Specializations:** list and detail. Pathway phases are fully data-driven from the JSON content (videos/pdfs/exercises).
+- [x] **Catalog `/explore`:** search, filters (topic, level, duration, provider), and course rows (Popular, New, Recommended, Recently viewed) built from **one** `CourseCard`/`CourseRow` component. **19 Nov 2026.** Courses in the header open `/explore`. `/coursepage` still has 60-second learning and the daily challenge.
+- [x] **Course page:** hero, sticky enroll card, skills, syllabus accordion, provider, duration. URL `/courses/:slug`. **19 Nov 2026.** `/courses/amazon-java` showed the syllabus, skills, and enroll card.
+- [x] **Enrollment + lesson player:** outline sidebar, video/text/pdf/image/code lessons, next/prev, auto-saved progress, "resume where you left off". **19 Nov 2026.** Signed-in progress writes `enrollments/{uid_courseId}`. Guests get the sign-in prompt. The player is `/courses/:slug/learn/:lessonId`.
+- [x] **Shared Assessment engine:** a single component and engine for quiz, final test and placement test, replacing the 3 existing implementations. **19 Nov 2026.** `/test`, `/placeTest`, the module quiz, and `/courses/:slug/assess/:kind` all use it.
+  - `startAssessment` / `submitAssessment` callable functions do **server-side grading**. **19 Nov 2026.** Grading is unit-tested. Clients cannot read `assessmentAttempts` or `questionBanks`. The functions are not deployed.
+  - The proctor mode keeps camera + face check (`face-api.js` tiny detector), fullscreen and tab-switch counting. **19 Nov 2026.** Final and placement sittings use it.
+- [x] **Specializations:** list and detail. Pathway phases are fully data-driven from the JSON content (videos/pdfs/exercises). **19 Nov 2026.** `/specializations/artificial-intelligence` and `/specializations/artificial-intelligence/phase/0` load from the JSON, including a direct visit with no navigation state. The old `/specialization/:id` URL still works.
 - [ ] **My Learning `/learn`:** real enrollments, progress and next lesson.
 - [ ] **Certificates:** an `issueCertificate` function generates the PDF with pdf-lib and stores it in Storage. Add the `/verify/certificate/:id` page, a LinkedIn share button and a profile showcase. Keep the confetti moment.
 - [ ] Keep **60-Second Learning** and **Daily Challenge**: content moves to data and the leaks are fixed. *(Real code execution arrives in Phase 6.)*

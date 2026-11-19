@@ -5,6 +5,7 @@ import pyq2 from '../assets/cocube.jpg';
 import dsImage from '../assets/ds-image.jpeg';
 import javaImage from '../assets/java-image.jpg';
 import bgImage from "../assets/notesheaderbg.png"; // adjust path as needed
+import { NotesDesignBand } from "../components/shared/DesignBands";
 import oopsImage from '../assets/oops-image.jpeg';
 import osImage from '../assets/os-image.png';
 
@@ -141,6 +142,7 @@ const NotesPage = () => {
 
   return (
     <div style={styles.container}>
+      <NotesDesignBand />
       <div style={styles.sidebar}>
         {/* Flash Notes Card */}
         <div 

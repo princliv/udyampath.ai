@@ -10,6 +10,7 @@ import { FiPlus } from "react-icons/fi"; // Import the plus icon
 import ProfileEditModal from "../components/profile/ProfileEditModal"; // Import modal component
 import DetailForm from "../components/profile/detailform"; // Import form component
 import defaultProfileImage from "../assets/profile/profilePhoto.png"; // Default profile photo path
+import { ProfileDesignBand } from "../components/shared/DesignBands";
 
 const ProfilePage = () => {
   const [bannerImage, setBannerImage] = useState(null);
@@ -53,6 +54,7 @@ const ProfilePage = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px", padding: "20px" }}>
+      <ProfileDesignBand name={name} location={location} />
       {/* Top Section */}
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         

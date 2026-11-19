@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { slugify } from '../../features/learn/catalog';
 
 import AI from '../../assets/specializationpage/AI.jpg';
 import Cloud from '../../assets/specializationpage/cloud.jpg';
@@ -47,7 +48,8 @@ const sectionHeaderStyle = {
 };
 
 const SpecializationDetail = () => {
-  const { id } = useParams();
+  const { id, slug } = useParams();
+  const key = id || slug;
   const navigate = useNavigate();
   const [specialization, setSpecialization] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -58,7 +60,7 @@ const SpecializationDetail = () => {
         const response = await fetch('/specializations.json');
         const data = await response.json();
         console.log("Loaded data:", data); // Debugging log
-        const foundSpec = data.specializations.find(spec => spec.id === parseInt(id));
+        const foundSpec = data.specializations.find((spec) => String(spec.id) === String(key) || slugify(spec.name) === String(key));
         
         if (foundSpec) {
           console.log("Found specialization:", foundSpec); // Debugging log
@@ -75,7 +77,7 @@ const SpecializationDetail = () => {
     };
 
     fetchSpecialization();
-  }, [id, navigate]);
+  }, [key, navigate]);
 
   if (loading) {
     return (
@@ -271,7 +273,7 @@ const SpecializationDetail = () => {
               transform: 'translateX(5px)'
             }
           }}
-          onClick={() => navigate(`/specialization/${id}/pathway/${index}`, { 
+          onClick={() => navigate(slug ? `/specializations/${slug}/phase/${index}` : `/specialization/${id}/pathway/${index}`, { 
             state: { 
               phase,
               specializationName: specialization.name 

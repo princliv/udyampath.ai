@@ -53,6 +53,10 @@ const InternApply = lazy(() => import("./components/jobpage/internApply"));
 const JobDetail = lazy(() => import("./components/jobpage/jobDetails"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Welcome = lazy(() => import("./pages/Welcome"));
+const ExplorePage = lazy(() => import("./features/learn/ExplorePage"));
+const CourseView = lazy(() => import("./features/learn/CourseView"));
+const LessonPlayer = lazy(() => import("./features/learn/LessonPlayer"));
+const Assessment = lazy(() => import("./features/learn/Assessment"));
 
 function ProtectedRoute({ user, loading, children }) {
   if (loading) return null;
@@ -66,7 +70,7 @@ function RecruiterRoute({ user, loading, userType, children }) {
 }
 
 function sectionForPath(pathname) {
-  if (pathname.startsWith("/course") || pathname.startsWith("/module") || pathname.startsWith("/specialization") || pathname === "/test") return "learn";
+  if (pathname.startsWith("/course") || pathname.startsWith("/explore") || pathname.startsWith("/module") || pathname.startsWith("/specialization") || pathname === "/test") return "learn";
   if (pathname.startsWith("/job-simulator")) return "simulator";
   if (
     pathname.startsWith("/job") ||
@@ -199,6 +203,10 @@ function AppContent() {
                 <Route path="/homepage" element={<Homepage />} />
                 <Route path="/welcome" element={<Welcome />} />
                 <Route path="/coursepage" element={<CoursePage />} />
+                <Route path="/explore" element={<ExplorePage />} />
+                <Route path="/courses/:slug" element={<CourseView />} />
+                <Route path="/courses/:slug/learn/:lessonId" element={<LessonPlayer />} />
+                <Route path="/courses/:slug/assess/:kind" element={<Assessment />} />
                 <Route path="/jobpage" element={<JobPage />} />
                 <Route path="/toolspage" element={<ToolsPage />} />
                 <Route path="/profile" element={<ProtectedRoute user={user} loading={isAuthLoading}><Profile /></ProtectedRoute>} />
@@ -232,6 +240,8 @@ function AppContent() {
                 <Route path="/job-simulator" element={<JobSimulator />} />
                 <Route path="/verify/badge/:id" element={<BadgeVerify />} />
                 <Route path="/specializations" element={<SpecializationPage />} />
+                <Route path="/specializations/:slug" element={<SpecializationDetail />} />
+                <Route path="/specializations/:slug/phase/:n" element={<PathwayPhaseDetail />} />
                 <Route path="/ai-mentor" element={<ComingSoon title="AI Mentor" />} />
                 <Route path="/resume-check" element={<ResumeCheck />} />
                 <Route path="/interview-checklist" element={<InterCheck />} />

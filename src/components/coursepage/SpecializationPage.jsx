@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { slugify } from '../../features/learn/catalog';
 import { motion } from 'framer-motion';
 import GlassCard from '../shared/GlassCard';
 import AnimatedSection from '../shared/AnimatedSection';
@@ -71,7 +72,7 @@ const SpecializationPage = () => {
   );
 
   const openSpecializationDetail = (specialization) => {
-    navigate(`/specialization/${specialization.id}`, { state: { specialization } });
+    navigate(`/specializations/${slugify(specialization.name)}`);
   };
 
   if (loading) {

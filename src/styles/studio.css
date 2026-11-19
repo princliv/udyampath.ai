@@ -25,13 +25,11 @@
 }
 
 .studio-hero--jobs {
-  background:
-    linear-gradient(180deg, rgb(224 242 254 / 0.9), #fff 72%);
+  background: linear-gradient(180deg, rgb(224 242 254 / 0.9), #fff 72%);
 }
 
 .studio-hero--tools {
-  background:
-    linear-gradient(180deg, rgb(255 247 237 / 0.95), #fff 70%);
+  background: linear-gradient(180deg, rgb(255 247 237 / 0.95), #fff 70%);
 }
 
 .studio-hero--sim {
@@ -165,46 +163,99 @@
 
 .studio-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 16px;
 }
 
-.studio-tile {
+.path-card {
   background: #fff;
-  border: 1px solid var(--n-200, #e2e8f0);
-  border-radius: 16px;
-  padding: 18px;
+  border: 1px solid #e7eef8;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 10px 24px rgb(15 23 42 / 0.05);
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  min-height: 180px;
-  box-shadow: 0 1px 2px rgb(15 23 42 / 0.05);
-  text-decoration: none;
-  color: inherit;
+  min-height: 100%;
 }
 
-.studio-tile h3 {
+.path-card-band {
+  position: relative;
+  height: 118px;
+  background-color: var(--wash, #f8fafc);
+  background-image:
+    radial-gradient(
+      circle at 82% 42%,
+      color-mix(in srgb, var(--ink, #2457f5) 16%, transparent) 0 46px,
+      transparent 47px
+    ),
+    linear-gradient(rgb(255 255 255 / 0.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 0.35) 1px, transparent 1px);
+  background-size:
+    auto,
+    14px 14px,
+    14px 14px;
+}
+
+.path-card-kicker {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--ink, #0f172a) 70%, #64748b);
+}
+
+.path-card-mark {
+  position: absolute;
+  left: 16px;
+  bottom: 8px;
+  font-size: 42px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  color: var(--ink, #0f172a);
+}
+
+.path-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 14px 16px;
+  flex: 1;
+}
+
+.path-card-body h3 {
   margin: 0;
   font-size: 1.05rem;
 }
 
-.studio-tile p {
+.path-card-body p {
   margin: 0;
   color: var(--n-600, #475569);
-  font-size: 0.95rem;
+  font-size: 0.92rem;
+  line-height: 1.45;
   flex: 1;
 }
 
-.studio-mark {
-  width: 56px;
-  height: 56px;
-  border-radius: 18px;
-  display: grid;
-  place-items: center;
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  background: var(--mark, #f1f5f9);
-  color: var(--ink, #0f172a);
+.path-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.path-card-meta span {
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 8px;
+}
+
+.path-card .studio-btn {
+  width: 100%;
+  margin-top: 4px;
 }
 
 .studio-tabs {
@@ -356,6 +407,66 @@
   color: #b45309;
   font-size: 2rem;
   font-weight: 800;
+}
+
+.city-panel {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  background: #2457f5;
+  color: #fff;
+  border-radius: 20px;
+  padding: 28px 24px;
+}
+
+.city-panel h2,
+.field-panel h2 {
+  margin: 8px 0;
+  max-width: 18ch;
+  font-size: clamp(1.5rem, 1rem + 1.2vw, 2rem);
+}
+
+.city-panel p {
+  max-width: 46ch;
+  color: rgb(255 255 255 / 0.9);
+}
+
+.field-panel {
+  background: #fff;
+  border: 1px solid #e7eef8;
+  border-radius: 20px;
+  padding: 28px 24px;
+  text-align: center;
+}
+
+.profile-band {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.profile-initials {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #ede9fe;
+  color: #5b21b6;
+  font-weight: 800;
+}
+
+.job-ready-card {
+  background: #1e1b4b;
+  color: #fff;
+  border-radius: 18px;
+  padding: 18px;
+}
+
+.job-ready-card h3,
+.job-ready-card p {
+  margin: 8px 0;
 }
 
 @media (max-width: 800px) {

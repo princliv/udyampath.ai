@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Confetti from 'react-confetti';
+import { slugify } from '../../features/learn/catalog';
 
 const PathwayPhaseDetail = () => {
   const { state } = useLocation();
-  const { id, phaseIndex } = useParams();
+  const { id, phaseIndex, slug, n } = useParams();
+  const specKey = id || slug;
+  const indexParam = phaseIndex ?? n;
   const navigate = useNavigate();
   const { phase, specializationName } = state || {};
   const [allPhases, setAllPhases] = useState([]);
@@ -14,16 +17,18 @@ const PathwayPhaseDetail = () => {
   const [showTestModal, setShowTestModal] = useState(false);
   const [testScore, setTestScore] = useState(null);
   const [activeTab, setActiveTab] = useState('content');
+  const [specName, setSpecName] = useState(specializationName || "");
 
   React.useEffect(() => {
     const fetchSpecialization = async () => {
       try {
         const response = await fetch('/specializations.json');
         const data = await response.json();
-        const foundSpec = data.specializations.find(spec => spec.id === parseInt(id));
+        const foundSpec = data.specializations.find((spec) => String(spec.id) === String(specKey) || slugify(spec.name) === String(specKey));
         
         if (foundSpec && foundSpec.pathway) {
           setAllPhases(foundSpec.pathway);
+          setSpecName(foundSpec.name);
         }
       } catch (error) {
         console.error("Error loading specialization:", error);
@@ -33,20 +38,20 @@ const PathwayPhaseDetail = () => {
     };
 
     fetchSpecialization();
-  }, [id]);
+  }, [specKey]);
 
   const markAsComplete = () => {
-    const currentIndex = parseInt(phaseIndex);
+    const currentIndex = parseInt(indexParam, 10);
     const newCompletedPhases = [...completedPhases, currentIndex];
     setCompletedPhases(newCompletedPhases);
 
     if (currentIndex === allPhases.length - 1) {
       setShowTestModal(true);
     } else {
-      navigate(`/specialization/${id}/pathway/${currentIndex + 1}`, {
+      navigate(slug ? `/specializations/${slug}/phase/${currentIndex + 1}` : `/specialization/${id}/pathway/${currentIndex + 1}`, {
         state: {
           phase: allPhases[currentIndex + 1],
-          specializationName
+          specializationName: specName || specializationName
         }
       });
     }
@@ -61,7 +66,17 @@ const PathwayPhaseDetail = () => {
     }
   };
 
-  if (!phase) {
+  const activePhase = phase || allPhases[Number(indexParam)] || null;
+
+  if (loading && !activePhase) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <div>Loading pathway…</div>
+      </div>
+    );
+  }
+
+  if (!activePhase) {
     return (
       <div style={{ 
         display: 'flex', 
@@ -192,7 +207,7 @@ const PathwayPhaseDetail = () => {
               gap: '15px',
               margin: '20px 0'
             }}>
-              {phase.topics?.map((topic, index) => (
+              {activePhase.topics?.map((topic, index) => (
                 <div key={index} style={{
                   backgroundColor: '#f5f9ff',
                   padding: '15px',
@@ -329,7 +344,22 @@ const PathwayPhaseDetail = () => {
     };
   };
 
-  const phaseContent = getPhaseContent(phase.phase);
+  const hasMaterial = [activePhase.videos, activePhase.pdfs, activePhase.exercises].some((list) => Array.isArray(list) && list.length);
+  const phaseContent = hasMaterial ? {
+    objectives: activePhase.topics || ["Learn the key concepts of this phase"],
+    videos: activePhase.videos || [],
+    pdfs: activePhase.pdfs || [],
+    exercises: activePhase.exercises || [],
+    content: (
+      <div>
+        <h3>{activePhase.phase}</h3>
+        <p>{activePhase.duration ? `Planned length: ${activePhase.duration}.` : "This phase uses the specialization pathway."}</p>
+        {Array.isArray(activePhase.topics) ? (
+          <ul>{activePhase.topics.map((topic) => <li key={topic}>{topic}</li>)}</ul>
+        ) : null}
+      </div>
+    ),
+  } : getPhaseContent(activePhase.phase);
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -696,11 +726,11 @@ const PathwayPhaseDetail = () => {
                   } 
                 })}
                 style={{
-                  backgroundColor: phase.phase === p.phase ? '#e4deff' : 'white',
+                  backgroundColor: activePhase.phase === p.phase ? '#e4deff' : 'white',
                   borderRadius: '8px',
                   padding: '15px',
                   cursor: 'pointer',
-                  borderLeft: `4px solid ${phase.phase === p.phase ? '#004aad' : '#e4deff'}`,
+                  borderLeft: `4px solid ${activePhase.phase === p.phase ? '#004aad' : '#e4deff'}`,
                   transition: 'all 0.2s',
                   position: 'relative',
                   ':hover': {
@@ -735,9 +765,9 @@ const PathwayPhaseDetail = () => {
                   <div style={{
                     width: '25px',
                     height: '25px',
-                    backgroundColor: phase.phase === p.phase ? '#004aad' : 
+                    backgroundColor: activePhase.phase === p.phase ? '#004aad' : 
                                     completedPhases.includes(index) ? '#4CAF50' : '#e4deff',
-                    color: phase.phase === p.phase ? 'white' : 
+                    color: activePhase.phase === p.phase ? 'white' : 
                           completedPhases.includes(index) ? 'white' : '#004aad',
                     borderRadius: '50%',
                     display: 'flex',
@@ -784,10 +814,10 @@ const PathwayPhaseDetail = () => {
             fontSize: '2.2rem', 
             margin: '0 0 10px 0',
           }}>
-            {phase.phase}
+            {activePhase.phase}
           </h1>
           <p style={{ fontSize: '1.1rem', opacity: 0.9 }}>
-            {specializationName} • {phase.duration}
+            {specName || specializationName} • {activePhase.duration}
           </p>
         </div>
 

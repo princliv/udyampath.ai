@@ -13,6 +13,7 @@ import {
 import { connectDatabaseEmulator, get, getDatabase, ref, set } from "firebase/database";
 import { connectFirestoreEmulator, doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
 import { connectStorageEmulator, getStorage } from "firebase/storage";
+import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -39,6 +40,7 @@ const auth = getAuth(app);
 const database = getDatabase(app);
 const firestore = getFirestore(app);
 const storage = getStorage(app);
+const functions = getFunctions(app);
 
 if (import.meta.env.VITE_USE_EMULATORS === "true" && !globalThis.__UDYAM_EMULATORS__) {
   globalThis.__UDYAM_EMULATORS__ = true;
@@ -46,6 +48,7 @@ if (import.meta.env.VITE_USE_EMULATORS === "true" && !globalThis.__UDYAM_EMULATO
   connectFirestoreEmulator(firestore, "127.0.0.1", 8080);
   connectDatabaseEmulator(database, "127.0.0.1", 9000);
   connectStorageEmulator(storage, "127.0.0.1", 9199);
+  connectFunctionsEmulator(functions, "127.0.0.1", 5001);
 }
 const googleProvider = new GoogleAuthProvider();
 
@@ -173,5 +176,5 @@ export const signUpWithEmail = async (email, password, firstName, lastName, phon
   }
 };
 
-export { auth, database, firestore, storage, googleProvider };
+export { auth, database, firestore, storage, functions, googleProvider };
 export default app;

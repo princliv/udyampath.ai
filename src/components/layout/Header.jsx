@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 const logo = "/udyampath-logo.svg";
 
 const links = [
-  { to: "/coursepage", label: "Courses" },
+  { to: "/explore", label: "Courses" },
   { to: "/jobpage", label: "Opportunity" },
   { to: "/toolspage", label: "Tools" },
   { to: "/notespage", label: "Notes" },

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import DOMPurify from "dompurify";
+import Assessment from "../../features/learn/Assessment";
 
 const ModulePage = () => {
     const location = useLocation();
@@ -207,56 +208,11 @@ const ModulePage = () => {
                 </div>
             )}
 
-            {showQuizModal && quizData.length > 0 && (
+            {showQuizModal && (
                 <div style={styles.modalOverlay}>
-                    <div style={styles.modalContent}>
-                        <div style={styles.modalIcon}>📝</div>
-                        <h2 style={styles.modalTitle}>Assessment Time!</h2>
-                        <p style={styles.modalText}>This quiz will test your understanding of the course material.</p>
-                        <div style={styles.quizContent}>
-                            {!quizCompleted ? (
-                                <>
-                                    <h3 style={styles.quizQuestion}>
-                                        {quizData[currentQuestionIndex].question}
-                                    </h3>
-                                    <div style={styles.quizOptions}>
-                                        {quizData[currentQuestionIndex].options.map((option, index) => (
-                                            <div 
-                                                key={index}
-                                                style={{
-                                                    ...styles.quizOption,
-                                                    backgroundColor: selectedAnswer === option ? "#7b61ff" : "#f0ebff",
-                                                    color: selectedAnswer === option ? "#fff" : "#333",
-                                                }}
-                                                onClick={() => handleAnswerSelect(option)}
-                                            >
-                                                {option}
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <button 
-                                        style={styles.primaryButton} 
-                                        onClick={handleNextQuestion}
-                                        disabled={!selectedAnswer}
-                                    >
-                                        {currentQuestionIndex < quizData.length - 1 ? 'Next Question' : 'Finish Quiz'}
-                                    </button>
-                                </>
-                            ) : (
-                                <>
-                                    <h3 style={styles.quizResult}>Quiz Completed!</h3>
-                                    <p style={styles.quizScore}>
-                                        Your score: {score} out of {quizData.length}
-                                    </p>
-                                    <button 
-                                        style={styles.primaryButton} 
-                                        onClick={handleQuizClose}
-                                    >
-                                        Close
-                                    </button>
-                                </>
-                            )}
-                        </div>
+                    <div style={{ ...styles.modalContent, width: "min(960px, 100%)", maxHeight: "90vh", overflow: "auto" }}>
+                        <Assessment kind="quiz" courseTitle={moduleData.title} />
+                        <button style={styles.secondaryButton} type="button" onClick={handleQuizClose}>Close</button>
                     </div>
                 </div>
             )}

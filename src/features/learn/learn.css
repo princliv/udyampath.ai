@@ -1,0 +1,249 @@
+.learn-page {
+  padding: 24px 0 64px;
+}
+
+.learn-wrap {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.learn-hero {
+  background: #ede9fe;
+  border-radius: 20px;
+  padding: 28px 24px;
+  margin-bottom: 20px;
+}
+
+.learn-hero h1,
+.learn-title {
+  margin: 8px 0;
+  font-size: clamp(1.8rem, 1.2rem + 1.6vw, 2.6rem);
+  letter-spacing: -0.03em;
+}
+
+.learn-filters {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(4, minmax(120px, 1fr));
+  gap: 12px;
+  margin: 16px 0 28px;
+}
+
+.learn-filters label,
+.learn-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.learn-filters input,
+.learn-filters select,
+.learn-search {
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  padding: 0 12px;
+  color: #0f172a;
+}
+
+.learn-row {
+  margin-bottom: 28px;
+}
+
+.learn-row h2 {
+  margin: 0 0 12px;
+  font-size: 1.25rem;
+}
+
+.learn-scroller {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 14px;
+}
+
+.learn-card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid #e7eef8;
+  border-radius: 18px;
+  overflow: hidden;
+  color: inherit;
+  text-decoration: none;
+  min-height: 100%;
+}
+
+.learn-card-band {
+  min-height: 92px;
+  display: flex;
+  align-items: flex-end;
+  padding: 14px;
+  background:
+    radial-gradient(circle at 80% 20%, rgb(255 255 255 / 0.7), transparent 42%),
+    var(--wash, #ede9fe);
+}
+
+.learn-card-mark {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--ink, #5b21b6);
+}
+
+.learn-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  flex: 1;
+}
+
+.learn-card-body h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.learn-card-body p {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.learn-card-body p,
+.learn-muted {
+  margin: 0;
+  color: #475569;
+  font-size: 0.92rem;
+}
+
+.learn-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.learn-pills span {
+  border-radius: 999px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 3px 8px;
+  font-size: 12px;
+}
+
+.learn-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 20px;
+  align-items: start;
+}
+
+.learn-enroll,
+.learn-panel,
+.learn-lesson {
+  background: #fff;
+  border: 1px solid #e7eef8;
+  border-radius: 18px;
+  padding: 18px;
+}
+
+.learn-enroll {
+  position: sticky;
+  top: 88px;
+}
+
+.learn-syllabus button {
+  width: 100%;
+  text-align: left;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 8px;
+  cursor: pointer;
+}
+
+.learn-player {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.learn-outline a {
+  display: block;
+  padding: 8px 0;
+  color: #0f172a;
+  text-decoration: none;
+}
+
+.learn-outline a.is-current {
+  font-weight: 750;
+  color: #5b21b6;
+}
+
+.learn-frame {
+  width: 100%;
+  min-height: 360px;
+  border: 0;
+  border-radius: 12px;
+  background: #0f172a;
+}
+
+.learn-prose {
+  line-height: 1.6;
+}
+
+.learn-prose pre {
+  overflow: auto;
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 12px;
+  border-radius: 12px;
+}
+
+.learn-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.assess-option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin-top: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  cursor: pointer;
+}
+
+.assess-option.is-picked {
+  border-color: #5b21b6;
+  background: #ede9fe;
+}
+
+.learn-video {
+  width: 160px;
+  height: 120px;
+  border-radius: 12px;
+  background: #0f172a;
+  object-fit: cover;
+}
+
+@media (max-width: 800px) {
+  .learn-filters,
+  .learn-layout,
+  .learn-player {
+    grid-template-columns: 1fr;
+  }
+
+  .learn-enroll {
+    position: static;
+  }
+}

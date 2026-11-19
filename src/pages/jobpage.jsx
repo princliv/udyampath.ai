@@ -23,7 +23,7 @@ const JobPage = () => {
       <div className="studio-wrap">
       <header className="studio-hero studio-hero--jobs">
         <p className="studio-kicker">Your city, then on-site or remote, then salary against expenses</p>
-        <h1>Jobs that pay enough to live where they are</h1>
+        <h1>Find a job you can live on.</h1>
         <p className="studio-lead">
           Enter the city you would live in. Each role is marked recommended or not from its posted pay against that city&apos;s monthly cost.
         </p>

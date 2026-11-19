@@ -419,6 +419,18 @@ const Details = ({ city = "" }) => {
             }}>
               <span style={{
                 position: "absolute",
+                left: "16px",
+                bottom: "4px",
+                fontSize: "40px",
+                fontWeight: 800,
+                letterSpacing: "-0.04em",
+                color: "#0f172a",
+                lineHeight: 1,
+              }}>
+                {String(job.company || job.title || "J").slice(0, 1).toUpperCase()}
+              </span>
+              <span style={{
+                position: "absolute",
                 top: "10px",
                 left: "10px",
                 backgroundColor: "#fff",

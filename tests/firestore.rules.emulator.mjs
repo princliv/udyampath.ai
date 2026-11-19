@@ -86,5 +86,32 @@ await check(
   assertFails(getDoc(doc(alice.firestore(), "questionBanks", "course", "questions", "q1"))),
 );
 
+await check(
+  "a learner enrolls only on their own id",
+  assertSucceeds(
+    setDoc(doc(alice.firestore(), "enrollments", "alice_amazon-java"), {
+      uid: "alice",
+      courseId: "amazon-java",
+      progressPct: 0,
+      status: "in_progress",
+      lessonsDone: {},
+    }),
+  ),
+);
+await check(
+  "a learner cannot enroll as someone else",
+  assertFails(
+    setDoc(doc(alice.firestore(), "enrollments", "bob_amazon-java"), {
+      uid: "bob",
+      courseId: "amazon-java",
+      progressPct: 0,
+    }),
+  ),
+);
+await check(
+  "attempts stay closed to the client",
+  assertFails(getDoc(doc(alice.firestore(), "assessmentAttempts", "one"))),
+);
+
 await testEnv.cleanup();
 console.log("rules ok");

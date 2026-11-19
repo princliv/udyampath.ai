@@ -14,6 +14,7 @@ import FaqPage from "../components/homepage/FaqPage";
 import Works from "../components/homepage/howitworks";
 import AnimatedSection from "../components/shared/AnimatedSection";
 import GlassCard from "../components/shared/GlassCard";
+import { HomeDesignBand } from "../components/shared/DesignBands";
 
 const Homepage = () => {
   const navigate = useNavigate();
@@ -33,10 +34,10 @@ const Homepage = () => {
               >
                 <h1 style={{ ...styles.heroHeading, ...(isMobile ? { fontSize: "32px" } : {}) }}>
                   <motion.span style={styles.heroLine} initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.2, delay: 0 }}>
-                    Your Complete
+                    Learn it. Prove it.
                   </motion.span>
                   <motion.span style={styles.heroLine} initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.2, delay: 0.1 }}>
-                    Career Companion
+                    Land a job you can live on.
                   </motion.span>
                 </h1>
               </motion.div>
@@ -47,7 +48,7 @@ const Homepage = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
               >
-                A complete solution for learning, time management, mental wellness, and career growth.
+                Every living-expense estimate is labelled. Salary is compared with the city where you would live.
               </motion.p>
 
               <motion.div
@@ -166,6 +167,7 @@ const Homepage = () => {
 
         {/* Section Divider */}
         <div style={styles.sectionDivider} />
+        <HomeDesignBand />
 
         {/* Additional Sections with Animations */}
         <AnimatedSection direction="up">
