@@ -1,6 +1,6 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import logo from "../../assets/background.png";
+const logo = "/udyampath-logo.svg";
 
 const links = [
   { to: "/coursepage", label: "Courses" },

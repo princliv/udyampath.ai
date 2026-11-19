@@ -49,7 +49,8 @@
 }
 
 .app-logo {
-  height: 50px;
+  height: 40px;
+  width: auto;
   display: block;
 }
 
@@ -140,9 +141,9 @@
 }
 
 .app-footer-logo {
-  width: 280px;
+  height: 48px;
+  width: auto;
   max-width: 100%;
-  height: auto;
   margin-bottom: 12px;
 }
 

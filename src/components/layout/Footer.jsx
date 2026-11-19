@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { Mail, MapPin, Phone, Printer } from "lucide-react";
-import logo from "../../assets/footerLogo.png";
+const logo = "/udyampath-logo-reverse.svg";
 
 export default function Footer() {
   const { pathname } = useLocation();

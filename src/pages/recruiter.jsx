@@ -1,10 +1,11 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../firebase/firebase";
-import logo from "../assets/background.png"; // Adjust the path as needed
 import headerBg from "../assets/headerbg.png";
 import { signOut } from "firebase/auth";
 import RecruiterHome from "../components/recruiter/RecruiterHome";
+
+const logo = "/udyampath-logo-reverse.svg";
 
 const Recruiter = () => {
   const navigate = useNavigate();
@@ -29,7 +30,8 @@ const Recruiter = () => {
   };
 
   const logoStyle = {
-    height: "50px",
+    height: "40px",
+    width: "auto",
     cursor: "pointer",
   };
 
@@ -62,7 +64,7 @@ const Recruiter = () => {
     <div>
       <header style={headerStyle}>
         <Link to="/homepage">
-          <img src={logo} alt="Logo" style={logoStyle} />
+          <img src={logo} alt="UdyamPath" style={logoStyle} />
         </Link>
         <nav style={navStyle}>
           <Link to="/profile" style={linkStyle}>
