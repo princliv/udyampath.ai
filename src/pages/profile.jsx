@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { motion } from "framer-motion";
-import { auth } from "../firebase/firebase";
+import { auth, firestore } from "../firebase/firebase";
 import { uploadUserFile, writeProfile } from "../lib/firebase";
 import { useProfile } from "../lib/useProfile";
 import { Card } from "../components/ui";
@@ -277,12 +279,38 @@ const ProfilePage = () => {
             </motion.span>
           ))}
         </div>
-        <p style={{ color: "var(--n-600)" }}>Certificates and badges will sit in this space.</p>
+        <CertificateShowcase uid={auth.currentUser?.uid} />
       </Card>
 
       <DetailForm />
     </div>
   );
 };
+
+function CertificateShowcase({ uid }) {
+  const [items, setItems] = useState([]);
+  useEffect(() => {
+    if (!uid) return undefined;
+    let stop = false;
+    getDocs(query(collection(firestore, "certificates"), where("uid", "==", uid)))
+      .then((snap) => {
+        if (!stop) setItems(snap.docs.map((item) => ({ id: item.id, ...item.data() })));
+      })
+      .catch(() => setItems([]));
+    return () => {
+      stop = true;
+    };
+  }, [uid]);
+  if (!items.length) return <p style={{ color: "var(--n-600)" }}>Certificates you earn appear here. Badges arrive with the simulator.</p>;
+  return (
+    <ul style={{ paddingLeft: 18 }}>
+      {items.map((item) => (
+        <li key={item.id}>
+          <Link to={`/verify/certificate/${item.id}`}>{item.title}</Link>
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 export default ProfilePage;

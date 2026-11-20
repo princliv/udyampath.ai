@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { slugify } from '../../features/learn/catalog';
+import { IssueCertificateButton } from '../../features/learn/certificates';
 
 import AI from '../../assets/specializationpage/AI.jpg';
 import Cloud from '../../assets/specializationpage/cloud.jpg';
@@ -181,6 +182,9 @@ const SpecializationDetail = () => {
         }}>
           {specialization.description}
         </p>
+        <div style={{ marginTop: 16 }}>
+          <IssueCertificateButton kind="specialization" refId={slug || slugify(specialization.name)} label="Issue specialization certificate" />
+        </div>
       </div>
 
       {/* Courses Section */}

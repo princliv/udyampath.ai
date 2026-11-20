@@ -20,6 +20,7 @@ export async function enroll(uid, course) {
   const data = {
     uid,
     courseId: course.id,
+    courseTitle: course.title,
     status: "in_progress",
     progressPct: 0,
     lessonsDone: {},
@@ -45,6 +46,7 @@ export async function saveLessonProgress(uid, course, lessonId) {
     ...existing,
     uid,
     courseId: course.id,
+    courseTitle: course.title,
     status: progressPct >= 100 ? "completed" : "in_progress",
     progressPct,
     lessonsDone,

@@ -114,16 +114,24 @@ service cloud.firestore {
         && request.resource.data.uid == request.auth.uid
         && id == request.auth.uid + '_' + request.resource.data.courseId
         && request.resource.data.courseId is string
-        && request.resource.data.progressPct is number;
+        && request.resource.data.progressPct is number
+        && !request.resource.data.keys().hasAny(['passedFinal', 'certificateId']);
       allow update: if signedIn()
         && resource.data.uid == request.auth.uid
         && request.resource.data.uid == resource.data.uid
-        && request.resource.data.courseId == resource.data.courseId;
+        && request.resource.data.courseId == resource.data.courseId
+        && request.resource.data.get('passedFinal', false) == resource.data.get('passedFinal', false)
+        && request.resource.data.get('certificateId', '') == resource.data.get('certificateId', '');
       allow delete: if false;
     }
 
     match /assessmentAttempts/{id} {
       allow read, write: if false;
+    }
+
+    match /certificates/{id} {
+      allow read: if true;
+      allow write: if false;
     }
   }
 }

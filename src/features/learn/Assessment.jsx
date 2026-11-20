@@ -4,6 +4,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { httpsCallable } from "firebase/functions";
 import { auth, functions } from "../../firebase/firebase";
 import { findCourse, loadCourses } from "./catalog";
+import { IssueCertificateButton } from "./certificates";
 import "./learn.css";
 
 const PROCTORED = new Set(["final", "placement"]);
@@ -186,7 +187,10 @@ export default function Assessment({ kind: kindProp, courseTitle, courseId: cour
                   <li key={item.id}>{item.correct ? "Correct" : "Review"} — {item.explanation}</li>
                 ))}
               </ul>
-              {params.slug ? <Link to={`/courses/${params.slug}`}>Back to the course</Link> : null}
+              {result.passed && kind === "final" ? (
+                <IssueCertificateButton kind="course" refId={courseId || "catalog"} label="Issue certificate" />
+              ) : null}
+              {params.slug ? <p><Link to={`/courses/${params.slug}`}>Back to the course</Link></p> : null}
             </div>
           ) : null}
           {message ? <p>{message}</p> : null}

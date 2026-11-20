@@ -4,6 +4,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../firebase/firebase";
 import { findCourse, flattenLessons, loadCourses, rememberCourse } from "./catalog";
 import { enroll, readEnrollment } from "./enroll";
+import { IssueCertificateButton } from "./certificates";
 import "./learn.css";
 
 export default function CourseView() {
@@ -100,6 +101,11 @@ export default function CourseView() {
             <p><Link to={`/courses/${course.slug}/learn/${resumeId}`}>Resume where you left off</Link></p>
           ) : null}
           <p><Link to={`/courses/${course.slug}/assess/quiz`}>Quiz</Link> · <Link to={`/courses/${course.slug}/assess/final`}>Final test</Link></p>
+          {enrollment?.certificateId ? <p><Link to={`/verify/certificate/${enrollment.certificateId}`}>View certificate</Link></p> : null}
+          {user && enrollment?.progressPct >= 100 && enrollment?.passedFinal && !enrollment?.certificateId ? (
+            <IssueCertificateButton kind="course" refId={course.id} label="Issue certificate" />
+          ) : null}
+          <p><Link to="/learn">My learning</Link></p>
           {message ? <p>{message}</p> : null}
         </aside>
       </div>

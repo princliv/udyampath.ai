@@ -753,18 +753,18 @@ Salary math: the job JSON does not store a pay period. `affordability.js` treats
   - `startAssessment` / `submitAssessment` callable functions do **server-side grading**. **19 Nov 2026.** Grading is unit-tested. Clients cannot read `assessmentAttempts` or `questionBanks`. The functions are not deployed.
   - The proctor mode keeps camera + face check (`face-api.js` tiny detector), fullscreen and tab-switch counting. **19 Nov 2026.** Final and placement sittings use it.
 - [x] **Specializations:** list and detail. Pathway phases are fully data-driven from the JSON content (videos/pdfs/exercises). **19 Nov 2026.** `/specializations/artificial-intelligence` and `/specializations/artificial-intelligence/phase/0` load from the JSON, including a direct visit with no navigation state. The old `/specialization/:id` URL still works.
-- [ ] **My Learning `/learn`:** real enrollments, progress and next lesson.
-- [ ] **Certificates:** an `issueCertificate` function generates the PDF with pdf-lib and stores it in Storage. Add the `/verify/certificate/:id` page, a LinkedIn share button and a profile showcase. Keep the confetti moment.
-- [ ] Keep **60-Second Learning** and **Daily Challenge**: content moves to data and the leaks are fixed. *(Real code execution arrives in Phase 6.)*
+- [x] **My Learning `/learn`:** real enrollments, progress and next lesson. **19 Nov 2026.** Signed-in rows come from `enrollments`. The manual progress buttons are gone. The old My Learnings tab uses the same page.
+- [x] **Certificates:** an `issueCertificate` function generates the PDF with pdf-lib and stores it in Storage. Add the `/verify/certificate/:id` page, a LinkedIn share button and a profile showcase. Keep the confetti moment. **19 Nov 2026.** A course certificate needs every lesson and a passed final. A specialization certificate needs every listed course finished the same way. Clients cannot write certificates. The function is not deployed.
+- [x] Keep **60-Second Learning** and **Daily Challenge**: content moves to data and the leaks are fixed. *(Real code execution arrives in Phase 6.)* **19 Nov 2026.** Topics and challenges live in `practiceContent.js`. Closing the timer clears the interval. The editor closes in place and no longer grades with a random pass.
 
 🎨 **UI design — V3 Courses** (`coursepage.jsx`, `components/coursepage/`, section accent: lavender `#7c6bff`):
 - [ ] Lavender hero band on `/explore`; the rest of the page is neutral.
 - [ ] Tab bar (Courses / Specializations / My Learning): soft lavender track, `--radius-xl`; the active tab is filled with the accent ink and white text, with a 0.3s transition. Tabs sync to `?tab=`.
 - [ ] Course rows (`recommendedCourse`, `recentView`, `mostPopular`, `newOnUdyamPath`) → one `CourseCard`: lavender-tinted skeleton while loading (base `#ede9fe`, highlight `#c8bbff`), then cards appear. No glass on course cards.
 - [ ] `SpecializationPage.jsx`: card grid with a lavender accent per card, short stagger on first load only.
-- [ ] `MyLearningsPage.jsx`: progress bars fill on mount (`width: 0 → n%`), always with the text percentage.
+- [x] `MyLearningsPage.jsx`: progress bars fill on mount (`width: 0 → n%`), always with the text percentage. **19 Nov 2026.** `/learn` fills the bar and shows the percentage. Reduced motion skips the fill.
 - [ ] `modulePage.jsx` / lesson player: section headers get a left border in the accent colour; focus layout from DESIGN_PRINCIPLES §8.
-- [ ] Certificate moment: glass celebration overlay + confetti (reduced-motion safe).
+- [x] Certificate moment: glass celebration overlay + confetti (reduced-motion safe). **19 Nov 2026.** The overlay uses a blurred backdrop. Confetti is skipped when reduced motion is on.
 
 **Exit:**
 - A learner can enroll, finish lessons, pass the final test (graded server-side) and download a verifiable certificate.

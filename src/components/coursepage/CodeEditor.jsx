@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-const CodeEditor = ({ challenge }) => {
+const CodeEditor = ({ challenge, onClose }) => {
   const navigate = useNavigate();
   const [code, setCode] = useState('');
   const [output, setOutput] = useState('');
@@ -12,6 +12,9 @@ const CodeEditor = ({ challenge }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [feedback, setFeedback] = useState('');
   const [testCases, setTestCases] = useState([]);
+  const pending = useRef(null);
+
+  useEffect(() => () => clearTimeout(pending.current), []);
 
   // Use the passed challenge prop or a default if none
   const currentChallenge = React.useMemo(() => challenge || {
@@ -90,35 +93,21 @@ const CodeEditor = ({ challenge }) => {
 
   const handleRunCode = () => {
     setIsRunning(true);
-    setOutput('Running your code...');
-    
-    // Simulate code execution
-    setTimeout(() => {
-      const randomSuccess = Math.random() > 0.3;
-      
-      if (randomSuccess) {
-        const updatedCases = testCases.map((testCase, index) => ({
-          ...testCase,
-          passed: index < 2 // First two pass for demo
-        }));
-        setTestCases(updatedCases);
-        
-        setOutput('Code executed successfully!\n' + 
-          `Test cases passed: ${updatedCases.filter(tc => tc.passed).length}/${testCases.length}`);
-      } else {
-        setOutput('Error in your code:\nSyntaxError: Unexpected token');
-      }
-      
+    if (!code.trim()) {
+      setOutput("Write an answer before running it.");
       setIsRunning(false);
-    }, 1500);
+      return;
+    }
+    setTestCases((cases) => cases.map((testCase) => ({ ...testCase, passed: false })));
+    setOutput("Your answer stays on this page. Automatic tests arrive with the code runner, so this run does not mark the solution correct or wrong.");
+    setIsRunning(false);
   };
 
   const handleSubmit = () => {
     setIsSubmitted(true);
     setIsRunning(true);
     
-    // Simulate evaluation
-    setTimeout(() => {
+    pending.current = setTimeout(() => {
       const passedCount = testCases.filter(tc => tc.passed).length;
       const totalCases = testCases.length;
       
@@ -214,7 +203,7 @@ const CodeEditor = ({ challenge }) => {
             ⏱️ {formatTime(timeSpent)}
           </div>
           <button 
-            onClick={() => navigate('/')}
+            onClick={() => (onClose ? onClose() : navigate("/"))}
             style={{
               padding: '8px 15px',
               backgroundColor: '#f0f0f0',

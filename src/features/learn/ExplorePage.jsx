@@ -29,7 +29,7 @@ export default function ExplorePage() {
           <p className="studio-kicker">Catalog</p>
           <h1>Find a course, then prove it.</h1>
           <p className="learn-muted">Search by topic, level, length, and provider. The same card is used in every row.</p>
-          <p><Link to="/coursepage">60-second learning and the daily challenge stay here.</Link></p>
+          <p><Link to="/learn">My learning</Link> · <Link to="/coursepage">60-second learning and the daily challenge</Link></p>
         </header>
         <div className="learn-filters">
           <label>Search<input className="learn-search" value={filters.q} onChange={set("q")} placeholder="Java, data, cloud" /></label>

@@ -113,5 +113,28 @@ await check(
   assertFails(getDoc(doc(alice.firestore(), "assessmentAttempts", "one"))),
 );
 
+await check(
+  "a learner cannot mark their own final as passed",
+  assertFails(
+    setDoc(doc(alice.firestore(), "enrollments", "alice_amazon-java"), { passedFinal: true }, { merge: true }),
+  ),
+);
+
+await testEnv.withSecurityRulesDisabled(async (context) => {
+  await setDoc(doc(context.firestore(), "certificates", "cert-1"), {
+    uid: "alice",
+    title: "Java",
+    recipientName: "Alice",
+  });
+});
+await check(
+  "anyone can read a certificate",
+  assertSucceeds(getDoc(doc(testEnv.unauthenticatedContext().firestore(), "certificates", "cert-1"))),
+);
+await check(
+  "a learner cannot write a certificate",
+  assertFails(setDoc(doc(alice.firestore(), "certificates", "fake"), { uid: "alice", title: "Fake" })),
+);
+
 await testEnv.cleanup();
 console.log("rules ok");

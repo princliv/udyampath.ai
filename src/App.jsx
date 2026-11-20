@@ -57,6 +57,8 @@ const ExplorePage = lazy(() => import("./features/learn/ExplorePage"));
 const CourseView = lazy(() => import("./features/learn/CourseView"));
 const LessonPlayer = lazy(() => import("./features/learn/LessonPlayer"));
 const Assessment = lazy(() => import("./features/learn/Assessment"));
+const LearnPage = lazy(() => import("./features/learn/LearnPage"));
+const CertificateVerify = lazy(() => import("./pages/CertificateVerify"));
 
 function ProtectedRoute({ user, loading, children }) {
   if (loading) return null;
@@ -70,7 +72,7 @@ function RecruiterRoute({ user, loading, userType, children }) {
 }
 
 function sectionForPath(pathname) {
-  if (pathname.startsWith("/course") || pathname.startsWith("/explore") || pathname.startsWith("/module") || pathname.startsWith("/specialization") || pathname === "/test") return "learn";
+  if (pathname.startsWith("/course") || pathname.startsWith("/explore") || pathname.startsWith("/learn") || pathname.startsWith("/module") || pathname.startsWith("/specialization") || pathname.startsWith("/verify/certificate") || pathname === "/test") return "learn";
   if (pathname.startsWith("/job-simulator")) return "simulator";
   if (
     pathname.startsWith("/job") ||
@@ -207,6 +209,8 @@ function AppContent() {
                 <Route path="/courses/:slug" element={<CourseView />} />
                 <Route path="/courses/:slug/learn/:lessonId" element={<LessonPlayer />} />
                 <Route path="/courses/:slug/assess/:kind" element={<Assessment />} />
+                <Route path="/learn" element={<LearnPage />} />
+                <Route path="/verify/certificate/:id" element={<CertificateVerify />} />
                 <Route path="/jobpage" element={<JobPage />} />
                 <Route path="/toolspage" element={<ToolsPage />} />
                 <Route path="/profile" element={<ProtectedRoute user={user} loading={isAuthLoading}><Profile /></ProtectedRoute>} />
